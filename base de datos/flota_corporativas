@@ -1,0 +1,2758 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 17.2 (Debian 17.2-1.pgdg120+1)
+-- Dumped by pg_dump version 17.2
+
+-- Started on 2025-05-17 02:38:30 UTC
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET transaction_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 256 (class 1255 OID 17624)
+-- Name: actualizar_conductor(integer, character varying, character varying, character varying, character varying, character varying); Type: PROCEDURE; Schema: public; Owner: grupo2
+--
+
+CREATE PROCEDURE public.actualizar_conductor(IN p_id integer, IN p_nombre character varying, IN p_cedula character varying, IN p_licencia_conduccion character varying, IN p_telefono character varying, IN p_correo character varying)
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    conductor_existe BOOLEAN;
+BEGIN
+    SELECT EXISTS(SELECT 1 FROM conductores WHERE id_conductor = p_id) INTO conductor_existe;
+
+    IF conductor_existe THEN
+        UPDATE conductores SET
+            nombre = p_nombre,
+            cedula = p_cedula,
+            licencia_conduccion = p_licencia_conduccion,
+            telefono = p_telefono,
+            correo = p_correo
+        WHERE id_conductor = p_id;
+
+        COMMIT;
+        RAISE NOTICE 'Conductor con ID % actualizado correctamente', p_id;
+    ELSE
+        RAISE EXCEPTION 'El conductor con ID % no existe', p_id;
+    END IF;
+END;
+$$;
+
+
+ALTER PROCEDURE public.actualizar_conductor(IN p_id integer, IN p_nombre character varying, IN p_cedula character varying, IN p_licencia_conduccion character varying, IN p_telefono character varying, IN p_correo character varying) OWNER TO grupo2;
+
+--
+-- TOC entry 277 (class 1255 OID 17629)
+-- Name: actualizar_mantenimiento(integer, integer, integer, date, numeric, text); Type: PROCEDURE; Schema: public; Owner: grupo2
+--
+
+CREATE PROCEDURE public.actualizar_mantenimiento(IN p_id integer, IN p_vehiculo_id integer, IN p_tipo_mantenimiento_id integer, IN p_fecha date, IN p_costo numeric, IN p_descripcion text)
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    mantenimiento_existe BOOLEAN;
+BEGIN
+    SELECT EXISTS(SELECT 1 FROM mantenimientos_realizados WHERE id_realizados = p_id)
+    INTO mantenimiento_existe;
+
+    IF mantenimiento_existe THEN
+        UPDATE mantenimientos_realizados SET
+            vehiculo_id = p_vehiculo_id,
+            tipo_mantenimiento_id = p_tipo_mantenimiento_id,
+            fecha = p_fecha,
+            costo = p_costo,
+            descripcion = p_descripcion
+        WHERE id_realizados = p_id;
+
+        COMMIT;
+        RAISE NOTICE 'Mantenimiento con ID % actualizado correctamente', p_id;
+    ELSE
+        RAISE EXCEPTION 'El mantenimiento con ID % no existe', p_id;
+    END IF;
+END;
+$$;
+
+
+ALTER PROCEDURE public.actualizar_mantenimiento(IN p_id integer, IN p_vehiculo_id integer, IN p_tipo_mantenimiento_id integer, IN p_fecha date, IN p_costo numeric, IN p_descripcion text) OWNER TO grupo2;
+
+--
+-- TOC entry 280 (class 1255 OID 17632)
+-- Name: actualizar_registro_viaje(integer, integer, integer, date, integer, numeric, text); Type: PROCEDURE; Schema: public; Owner: grupo2
+--
+
+CREATE PROCEDURE public.actualizar_registro_viaje(IN p_id integer, IN p_vehiculo_id integer, IN p_ruta_id integer, IN p_fecha date, IN p_kilometros_recorridos integer, IN p_combustible_consumido numeric, IN p_observaciones text)
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    registro_existe BOOLEAN;
+BEGIN
+    SELECT EXISTS(SELECT 1 FROM registros_viaje WHERE id_registro_viaje = p_id)
+    INTO registro_existe;
+
+    IF registro_existe THEN
+        UPDATE registros_viaje SET
+            vehiculo_id = p_vehiculo_id,
+            ruta_id = p_ruta_id,
+            fecha = p_fecha,
+            kilometros_recorridos = p_kilometros_recorridos,
+            combustible_consumido = p_combustible_consumido,
+            observaciones = p_observaciones
+        WHERE id_registro_viaje = p_id;
+
+        COMMIT;
+        RAISE NOTICE 'Registro de viaje con ID % actualizado correctamente', p_id;
+    ELSE
+        RAISE EXCEPTION 'El registro de viaje con ID % no existe', p_id;
+    END IF;
+END;
+$$;
+
+
+ALTER PROCEDURE public.actualizar_registro_viaje(IN p_id integer, IN p_vehiculo_id integer, IN p_ruta_id integer, IN p_fecha date, IN p_kilometros_recorridos integer, IN p_combustible_consumido numeric, IN p_observaciones text) OWNER TO grupo2;
+
+--
+-- TOC entry 253 (class 1255 OID 17621)
+-- Name: actualizar_vehiculo(integer, character varying, character varying, character varying, character varying, integer, integer, integer); Type: PROCEDURE; Schema: public; Owner: grupo2
+--
+
+CREATE PROCEDURE public.actualizar_vehiculo(IN p_id integer, IN p_placa character varying, IN p_marca character varying, IN p_modelo character varying, IN p_tipo character varying, IN p_anio integer, IN p_kilometraje_total integer, IN p_departamento_id integer)
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    vehiculo_existe BOOLEAN;
+BEGIN
+    SELECT EXISTS(SELECT 1 FROM vehiculos WHERE id_vehiculo = p_id) INTO vehiculo_existe;
+
+    IF vehiculo_existe THEN
+        UPDATE vehiculos SET
+            placa = p_placa,
+            marca = p_marca,
+            modelo = p_modelo,
+            tipo = p_tipo,
+            anio = p_anio,
+            kilometraje_total = p_kilometraje_total,
+            departamento_id = p_departamento_id
+        WHERE id_vehiculo = p_id;
+
+        COMMIT;
+        RAISE NOTICE 'Vehículo con ID % actualizado correctamente', p_id;
+    ELSE
+        RAISE EXCEPTION 'El vehículo con ID % no existe', p_id;
+    END IF;
+END;
+$$;
+
+
+ALTER PROCEDURE public.actualizar_vehiculo(IN p_id integer, IN p_placa character varying, IN p_marca character varying, IN p_modelo character varying, IN p_tipo character varying, IN p_anio integer, IN p_kilometraje_total integer, IN p_departamento_id integer) OWNER TO grupo2;
+
+--
+-- TOC entry 258 (class 1255 OID 17926)
+-- Name: calcular_km_recorridos(integer, date, date); Type: FUNCTION; Schema: public; Owner: grupo2
+--
+
+CREATE FUNCTION public.calcular_km_recorridos(p_vehiculo_id integer, p_fecha_inicio date, p_fecha_fin date) RETURNS integer
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    total_km INT;
+BEGIN
+    SELECT SUM(kilometros_recorridos)
+    INTO total_km
+    FROM registros_viaje
+    WHERE vehiculo_id = p_vehiculo_id
+      AND fecha BETWEEN p_fecha_inicio AND p_fecha_fin;
+
+    RETURN COALESCE(total_km, 0);
+END;
+$$;
+
+
+ALTER FUNCTION public.calcular_km_recorridos(p_vehiculo_id integer, p_fecha_inicio date, p_fecha_fin date) OWNER TO grupo2;
+
+--
+-- TOC entry 262 (class 1255 OID 17928)
+-- Name: contar_incidentes_conductor(integer); Type: FUNCTION; Schema: public; Owner: grupo2
+--
+
+CREATE FUNCTION public.contar_incidentes_conductor(p_conductor_id integer) RETURNS integer
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    total_incidentes INT;
+BEGIN
+    SELECT COUNT(*) INTO total_incidentes
+    FROM incidentes
+    WHERE conductor_id = p_conductor_id;
+
+    RETURN total_incidentes;
+END;
+$$;
+
+
+ALTER FUNCTION public.contar_incidentes_conductor(p_conductor_id integer) OWNER TO grupo2;
+
+--
+-- TOC entry 257 (class 1255 OID 17881)
+-- Name: contar_mantenimientos_por_tipo(text); Type: FUNCTION; Schema: public; Owner: grupo2
+--
+
+CREATE FUNCTION public.contar_mantenimientos_por_tipo(p_tipo text) RETURNS integer
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    total INT;
+BEGIN
+    SELECT COUNT(*) INTO total
+    FROM mantenimientos_realizados mr
+    JOIN tipos_mantenimiento tm ON mr.tipo_mantenimiento_id = tm.id_mantenimiento
+    WHERE tm.nombre = p_tipo;
+
+    RETURN total;
+END;
+$$;
+
+
+ALTER FUNCTION public.contar_mantenimientos_por_tipo(p_tipo text) OWNER TO grupo2;
+
+--
+-- TOC entry 275 (class 1255 OID 17931)
+-- Name: contar_mantenimientos_por_tipo(character varying); Type: FUNCTION; Schema: public; Owner: grupo2
+--
+
+CREATE FUNCTION public.contar_mantenimientos_por_tipo(p_tipo character varying) RETURNS integer
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    total INT;
+BEGIN
+    SELECT COUNT(*) INTO total
+    FROM mantenimientos_realizados mr
+    JOIN tipos_mantenimiento tm ON mr.tipo_mantenimiento_id = tm.id_mantenimiento
+    WHERE tm.nombre = p_tipo;
+
+    RETURN total;
+END;
+$$;
+
+
+ALTER FUNCTION public.contar_mantenimientos_por_tipo(p_tipo character varying) OWNER TO grupo2;
+
+--
+-- TOC entry 260 (class 1255 OID 17627)
+-- Name: eliminar_conductor(integer); Type: PROCEDURE; Schema: public; Owner: grupo2
+--
+
+CREATE PROCEDURE public.eliminar_conductor(IN p_id integer)
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    conductor_existe BOOLEAN;
+BEGIN
+    SELECT EXISTS(SELECT 1 FROM conductores WHERE id_conductor = p_id) INTO conductor_existe;
+
+    IF conductor_existe THEN
+        DELETE FROM conductores WHERE id_conductor = p_id;
+
+        COMMIT;
+        RAISE NOTICE 'Conductor con ID % eliminado correctamente', p_id;
+    ELSE
+        RAISE EXCEPTION 'El conductor con ID % no existe', p_id;
+    END IF;
+END;
+$$;
+
+
+ALTER PROCEDURE public.eliminar_conductor(IN p_id integer) OWNER TO grupo2;
+
+--
+-- TOC entry 278 (class 1255 OID 17630)
+-- Name: eliminar_mantenimiento(integer); Type: PROCEDURE; Schema: public; Owner: grupo2
+--
+
+CREATE PROCEDURE public.eliminar_mantenimiento(IN p_id integer)
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    mantenimiento_existe BOOLEAN;
+BEGIN
+    SELECT EXISTS(SELECT 1 FROM mantenimientos_realizados WHERE id_realizados = p_id)
+    INTO mantenimiento_existe;
+
+    IF mantenimiento_existe THEN
+        DELETE FROM mantenimientos_realizados WHERE id_realizados = p_id;
+
+        COMMIT;
+        RAISE NOTICE 'Mantenimiento con ID % eliminado correctamente', p_id;
+    ELSE
+        RAISE EXCEPTION 'El mantenimiento con ID % no existe', p_id;
+    END IF;
+END;
+$$;
+
+
+ALTER PROCEDURE public.eliminar_mantenimiento(IN p_id integer) OWNER TO grupo2;
+
+--
+-- TOC entry 281 (class 1255 OID 17633)
+-- Name: eliminar_registro_viaje(integer); Type: PROCEDURE; Schema: public; Owner: grupo2
+--
+
+CREATE PROCEDURE public.eliminar_registro_viaje(IN p_id integer)
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    registro_existe BOOLEAN;
+BEGIN
+    SELECT EXISTS(SELECT 1 FROM registros_viaje WHERE id_registro_viaje = p_id)
+    INTO registro_existe;
+
+    IF registro_existe THEN
+        DELETE FROM registros_viaje WHERE id_registro_viaje = p_id;
+
+        COMMIT;
+        RAISE NOTICE 'Registro de viaje con ID % eliminado correctamente', p_id;
+    ELSE
+        RAISE EXCEPTION 'El registro de viaje con ID % no existe', p_id;
+    END IF;
+END;
+$$;
+
+
+ALTER PROCEDURE public.eliminar_registro_viaje(IN p_id integer) OWNER TO grupo2;
+
+--
+-- TOC entry 254 (class 1255 OID 17622)
+-- Name: eliminar_vehiculo(integer); Type: PROCEDURE; Schema: public; Owner: grupo2
+--
+
+CREATE PROCEDURE public.eliminar_vehiculo(IN p_id integer)
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    vehiculo_existe BOOLEAN;
+BEGIN
+    SELECT EXISTS(SELECT 1 FROM vehiculos WHERE id_vehiculo = p_id) INTO vehiculo_existe;
+
+    IF vehiculo_existe THEN
+        DELETE FROM vehiculos WHERE id_vehiculo = p_id;
+
+        COMMIT;
+        RAISE NOTICE 'Vehículo con ID % eliminado correctamente', p_id;
+    ELSE
+        RAISE EXCEPTION 'El vehículo con ID % no existe', p_id;
+    END IF;
+END;
+$$;
+
+
+ALTER PROCEDURE public.eliminar_vehiculo(IN p_id integer) OWNER TO grupo2;
+
+--
+-- TOC entry 285 (class 1255 OID 17852)
+-- Name: fn_auditoria_mantenimientos(); Type: FUNCTION; Schema: public; Owner: grupo2
+--
+
+CREATE FUNCTION public.fn_auditoria_mantenimientos() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        INSERT INTO auditoria_general (
+            tabla_afectada, id_referencia, usuario, operacion,
+            campo_1_nombre, campo_1_valor_viejo, campo_1_valor_nuevo,
+            campo_2_nombre, campo_2_valor_viejo, campo_2_valor_nuevo)
+        VALUES (
+            'mantenimientos_programados', NEW.id_programado, current_user, 'INSERT',
+            'fecha_programada', NULL, NEW.fecha_programada::TEXT,
+            'estado', NULL, NEW.estado);
+
+    ELSIF TG_OP = 'UPDATE' THEN
+        INSERT INTO auditoria_general (
+            tabla_afectada, id_referencia, usuario, operacion,
+            campo_1_nombre, campo_1_valor_viejo, campo_1_valor_nuevo,
+            campo_2_nombre, campo_2_valor_viejo, campo_2_valor_nuevo)
+        VALUES (
+            'mantenimientos_programados', NEW.id_programado, current_user, 'UPDATE',
+            'fecha_programada', OLD.fecha_programada::TEXT, NEW.fecha_programada::TEXT,
+            'estado', OLD.estado, NEW.estado);
+
+    ELSIF TG_OP = 'DELETE' THEN
+        INSERT INTO auditoria_general (
+            tabla_afectada, id_referencia, usuario, operacion,
+            campo_1_nombre, campo_1_valor_viejo, campo_1_valor_nuevo,
+            campo_2_nombre, campo_2_valor_viejo, campo_2_valor_nuevo)
+        VALUES (
+            'mantenimientos_programados', OLD.id_programado, current_user, 'DELETE',
+            'fecha_programada', OLD.fecha_programada::TEXT, NULL,
+            'estado', OLD.estado, NULL);
+    END IF;
+    RETURN NULL;
+END;
+$$;
+
+
+ALTER FUNCTION public.fn_auditoria_mantenimientos() OWNER TO grupo2;
+
+--
+-- TOC entry 286 (class 1255 OID 17854)
+-- Name: fn_auditoria_multas(); Type: FUNCTION; Schema: public; Owner: grupo2
+--
+
+CREATE FUNCTION public.fn_auditoria_multas() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        INSERT INTO auditoria_general (
+            tabla_afectada, id_referencia, usuario, operacion,
+            campo_1_nombre, campo_1_valor_viejo, campo_1_valor_nuevo,
+            campo_2_nombre, campo_2_valor_viejo, campo_2_valor_nuevo)
+        VALUES (
+            'multas', NEW.id_multa, current_user, 'INSERT',
+            'motivo', NULL, NEW.motivo,
+            'valor', NULL, NEW.valor::TEXT);
+
+    ELSIF TG_OP = 'UPDATE' THEN
+        INSERT INTO auditoria_general (
+            tabla_afectada, id_referencia, usuario, operacion,
+            campo_1_nombre, campo_1_valor_viejo, campo_1_valor_nuevo,
+            campo_2_nombre, campo_2_valor_viejo, campo_2_valor_nuevo)
+        VALUES (
+            'multas', NEW.id_multa, current_user, 'UPDATE',
+            'motivo', OLD.motivo, NEW.motivo,
+            'valor', OLD.valor::TEXT, NEW.valor::TEXT);
+
+    ELSIF TG_OP = 'DELETE' THEN
+        INSERT INTO auditoria_general (
+            tabla_afectada, id_referencia, usuario, operacion,
+            campo_1_nombre, campo_1_valor_viejo, campo_1_valor_nuevo,
+            campo_2_nombre, campo_2_valor_viejo, campo_2_valor_nuevo)
+        VALUES (
+            'multas', OLD.id_multa, current_user, 'DELETE',
+            'motivo', OLD.motivo, NULL,
+            'valor', OLD.valor::TEXT, NULL);
+    END IF;
+    RETURN NULL;
+END;
+$$;
+
+
+ALTER FUNCTION public.fn_auditoria_multas() OWNER TO grupo2;
+
+--
+-- TOC entry 284 (class 1255 OID 17850)
+-- Name: fn_auditoria_registros_viaje(); Type: FUNCTION; Schema: public; Owner: grupo2
+--
+
+CREATE FUNCTION public.fn_auditoria_registros_viaje() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    IF TG_OP = 'INSERT' THEN
+        INSERT INTO auditoria_general (
+            tabla_afectada, id_referencia, usuario, operacion,
+            campo_1_nombre, campo_1_valor_viejo, campo_1_valor_nuevo,
+            campo_2_nombre, campo_2_valor_viejo, campo_2_valor_nuevo,
+            observaciones)
+        VALUES (
+            'registros_viaje', NEW.id_registro_viaje, current_user, 'INSERT',
+            'kilometros_recorridos', NULL, NEW.kilometros_recorridos::TEXT,
+            'combustible_consumido', NULL, NEW.combustible_consumido::TEXT,
+            NEW.observaciones);
+
+    ELSIF TG_OP = 'UPDATE' THEN
+        INSERT INTO auditoria_general (
+            tabla_afectada, id_referencia, usuario, operacion,
+            campo_1_nombre, campo_1_valor_viejo, campo_1_valor_nuevo,
+            campo_2_nombre, campo_2_valor_viejo, campo_2_valor_nuevo,
+            observaciones)
+        VALUES (
+            'registros_viaje', NEW.id_registro_viaje, current_user, 'UPDATE',
+            'kilometros_recorridos', OLD.kilometros_recorridos::TEXT, NEW.kilometros_recorridos::TEXT,
+            'combustible_consumido', OLD.combustible_consumido::TEXT, NEW.combustible_consumido::TEXT,
+            NEW.observaciones);
+
+    ELSIF TG_OP = 'DELETE' THEN
+        INSERT INTO auditoria_general (
+            tabla_afectada, id_referencia, usuario, operacion,
+            campo_1_nombre, campo_1_valor_viejo, campo_1_valor_nuevo,
+            campo_2_nombre, campo_2_valor_viejo, campo_2_valor_nuevo,
+            observaciones)
+        VALUES (
+            'registros_viaje', OLD.id_registro_viaje, current_user, 'DELETE',
+            'kilometros_recorridos', OLD.kilometros_recorridos::TEXT, NULL,
+            'combustible_consumido', OLD.combustible_consumido::TEXT, NULL,
+            OLD.observaciones);
+    END IF;
+    RETURN NULL;
+END;
+$$;
+
+
+ALTER FUNCTION public.fn_auditoria_registros_viaje() OWNER TO grupo2;
+
+--
+-- TOC entry 255 (class 1255 OID 17623)
+-- Name: insertar_conductor(character varying, character varying, character varying, character varying, character varying); Type: PROCEDURE; Schema: public; Owner: grupo2
+--
+
+CREATE PROCEDURE public.insertar_conductor(IN p_nombre character varying, IN p_cedula character varying, IN p_licencia_conduccion character varying, IN p_telefono character varying, IN p_correo character varying)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    INSERT INTO conductores (nombre, cedula, licencia_conduccion, telefono, correo)
+    VALUES (p_nombre, p_cedula, p_licencia_conduccion, p_telefono, p_correo);
+
+    COMMIT;
+    RAISE NOTICE 'Conductor insertado correctamente';
+END;
+$$;
+
+
+ALTER PROCEDURE public.insertar_conductor(IN p_nombre character varying, IN p_cedula character varying, IN p_licencia_conduccion character varying, IN p_telefono character varying, IN p_correo character varying) OWNER TO grupo2;
+
+--
+-- TOC entry 261 (class 1255 OID 17628)
+-- Name: insertar_mantenimiento(integer, integer, date, numeric, text); Type: PROCEDURE; Schema: public; Owner: grupo2
+--
+
+CREATE PROCEDURE public.insertar_mantenimiento(IN p_vehiculo_id integer, IN p_tipo_mantenimiento_id integer, IN p_fecha date, IN p_costo numeric, IN p_descripcion text)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    INSERT INTO mantenimientos_realizados (vehiculo_id, tipo_mantenimiento_id, fecha, costo, descripcion)
+    VALUES (p_vehiculo_id, p_tipo_mantenimiento_id, p_fecha, p_costo, p_descripcion);
+
+    COMMIT;
+    RAISE NOTICE 'Mantenimiento registrado correctamente';
+END;
+$$;
+
+
+ALTER PROCEDURE public.insertar_mantenimiento(IN p_vehiculo_id integer, IN p_tipo_mantenimiento_id integer, IN p_fecha date, IN p_costo numeric, IN p_descripcion text) OWNER TO grupo2;
+
+--
+-- TOC entry 279 (class 1255 OID 17631)
+-- Name: insertar_registro_viaje(integer, integer, date, integer, numeric, text); Type: PROCEDURE; Schema: public; Owner: grupo2
+--
+
+CREATE PROCEDURE public.insertar_registro_viaje(IN p_vehiculo_id integer, IN p_ruta_id integer, IN p_fecha date, IN p_kilometros_recorridos integer, IN p_combustible_consumido numeric, IN p_observaciones text)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    INSERT INTO registros_viaje (vehiculo_id, ruta_id, fecha, kilometros_recorridos, combustible_consumido, observaciones)
+    VALUES (p_vehiculo_id, p_ruta_id, p_fecha, p_kilometros_recorridos, p_combustible_consumido, p_observaciones);
+
+    COMMIT;
+    RAISE NOTICE 'Registro de viaje insertado correctamente';
+END;
+$$;
+
+
+ALTER PROCEDURE public.insertar_registro_viaje(IN p_vehiculo_id integer, IN p_ruta_id integer, IN p_fecha date, IN p_kilometros_recorridos integer, IN p_combustible_consumido numeric, IN p_observaciones text) OWNER TO grupo2;
+
+--
+-- TOC entry 252 (class 1255 OID 17620)
+-- Name: insertar_vehiculo(character varying, character varying, character varying, character varying, integer, integer, integer); Type: PROCEDURE; Schema: public; Owner: grupo2
+--
+
+CREATE PROCEDURE public.insertar_vehiculo(IN p_placa character varying, IN p_marca character varying, IN p_modelo character varying, IN p_tipo character varying, IN p_anio integer, IN p_kilometraje_total integer, IN p_departamento_id integer)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    INSERT INTO vehiculos (placa, marca, modelo, tipo, anio, kilometraje_total, departamento_id)
+    VALUES (p_placa, p_marca, p_modelo, p_tipo, p_anio, p_kilometraje_total, p_departamento_id);
+
+    COMMIT;
+    RAISE NOTICE 'Vehículo insertado correctamente';
+END;
+$$;
+
+
+ALTER PROCEDURE public.insertar_vehiculo(IN p_placa character varying, IN p_marca character varying, IN p_modelo character varying, IN p_tipo character varying, IN p_anio integer, IN p_kilometraje_total integer, IN p_departamento_id integer) OWNER TO grupo2;
+
+--
+-- TOC entry 283 (class 1255 OID 17932)
+-- Name: ruta_mas_recorrida(integer); Type: FUNCTION; Schema: public; Owner: grupo2
+--
+
+CREATE FUNCTION public.ruta_mas_recorrida(p_vehiculo_id integer) RETURNS text
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    nombre_ruta TEXT;
+BEGIN
+    SELECT r.nombre
+    INTO nombre_ruta
+    FROM registros_viaje rv
+    JOIN rutas r ON rv.ruta_id = r.id_ruta
+    WHERE rv.vehiculo_id = p_vehiculo_id
+    GROUP BY r.nombre
+    ORDER BY COUNT(*) DESC
+    LIMIT 1;
+
+    RETURN nombre_ruta;
+END;
+$$;
+
+
+ALTER FUNCTION public.ruta_mas_recorrida(p_vehiculo_id integer) OWNER TO grupo2;
+
+--
+-- TOC entry 259 (class 1255 OID 17927)
+-- Name: tiene_seguro_vigente(integer); Type: FUNCTION; Schema: public; Owner: grupo2
+--
+
+CREATE FUNCTION public.tiene_seguro_vigente(p_vehiculo_id integer) RETURNS boolean
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    vigente BOOLEAN;
+BEGIN
+    SELECT EXISTS (
+        SELECT 1
+        FROM polizas
+        WHERE vehiculo_id = p_vehiculo_id
+          AND CURRENT_DATE BETWEEN fecha_inicio AND fecha_fin
+    ) INTO vigente;
+
+    RETURN vigente;
+END;
+$$;
+
+
+ALTER FUNCTION public.tiene_seguro_vigente(p_vehiculo_id integer) OWNER TO grupo2;
+
+--
+-- TOC entry 282 (class 1255 OID 17882)
+-- Name: total_combustible(integer); Type: FUNCTION; Schema: public; Owner: grupo2
+--
+
+CREATE FUNCTION public.total_combustible(p_vehiculo_id integer) RETURNS numeric
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    total NUMERIC;
+BEGIN
+    SELECT SUM(combustible_consumido) INTO total
+    FROM registros_viaje
+    WHERE vehiculo_id = p_vehiculo_id;
+
+    RETURN COALESCE(total, 0);
+END;
+$$;
+
+
+ALTER FUNCTION public.total_combustible(p_vehiculo_id integer) OWNER TO grupo2;
+
+--
+-- TOC entry 263 (class 1255 OID 17929)
+-- Name: ultima_asignacion_conductor(integer); Type: FUNCTION; Schema: public; Owner: grupo2
+--
+
+CREATE FUNCTION public.ultima_asignacion_conductor(p_conductor_id integer) RETURNS TABLE(vehiculo_id integer, fecha_inicio date, fecha_fin date)
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    RETURN QUERY
+    SELECT a.vehiculo_id, a.fecha_inicio, a.fecha_fin
+    FROM asignaciones_vehiculo a
+    WHERE a.conductor_id = p_conductor_id
+    ORDER BY a.fecha_inicio DESC
+    LIMIT 1;
+END;
+$$;
+
+
+ALTER FUNCTION public.ultima_asignacion_conductor(p_conductor_id integer) OWNER TO grupo2;
+
+--
+-- TOC entry 264 (class 1255 OID 17930)
+-- Name: ultimo_mantenimiento(integer); Type: FUNCTION; Schema: public; Owner: grupo2
+--
+
+CREATE FUNCTION public.ultimo_mantenimiento(p_vehiculo_id integer) RETURNS date
+    LANGUAGE plpgsql
+    AS $$
+DECLARE
+    fecha_ultima DATE;
+BEGIN
+    SELECT MAX(fecha) INTO fecha_ultima
+    FROM mantenimientos_realizados
+    WHERE vehiculo_id = p_vehiculo_id;
+
+    RETURN fecha_ultima;
+END;
+$$;
+
+
+ALTER FUNCTION public.ultimo_mantenimiento(p_vehiculo_id integer) OWNER TO grupo2;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- TOC entry 230 (class 1259 OID 17211)
+-- Name: asignaciones_vehiculo; Type: TABLE; Schema: public; Owner: grupo2
+--
+
+CREATE TABLE public.asignaciones_vehiculo (
+    id_asignacion_vehiculo integer NOT NULL,
+    vehiculo_id integer,
+    conductor_id integer,
+    fecha_inicio date NOT NULL,
+    fecha_fin date,
+    estado boolean DEFAULT true
+);
+
+
+ALTER TABLE public.asignaciones_vehiculo OWNER TO grupo2;
+
+--
+-- TOC entry 228 (class 1259 OID 17139)
+-- Name: conductores; Type: TABLE; Schema: public; Owner: grupo2
+--
+
+CREATE TABLE public.conductores (
+    id_conductor integer NOT NULL,
+    nombre character varying(100),
+    cedula character varying(20) NOT NULL,
+    licencia_conduccion character varying(50),
+    telefono character varying(20),
+    correo character varying(100),
+    estado boolean DEFAULT true
+);
+
+
+ALTER TABLE public.conductores OWNER TO grupo2;
+
+--
+-- TOC entry 226 (class 1259 OID 17124)
+-- Name: vehiculos; Type: TABLE; Schema: public; Owner: grupo2
+--
+
+CREATE TABLE public.vehiculos (
+    id_vehiculo integer NOT NULL,
+    placa character varying(10) NOT NULL,
+    marca character varying(50),
+    modelo character varying(50),
+    tipo character varying(30),
+    anio integer,
+    kilometraje_total integer DEFAULT 0,
+    departamento_id integer,
+    estado boolean DEFAULT true
+);
+
+
+ALTER TABLE public.vehiculos OWNER TO grupo2;
+
+--
+-- TOC entry 246 (class 1259 OID 17606)
+-- Name: asignacion_actual_vehiculos; Type: VIEW; Schema: public; Owner: grupo2
+--
+
+CREATE VIEW public.asignacion_actual_vehiculos AS
+ SELECT v.placa,
+    c.nombre AS conductor,
+    a.fecha_inicio,
+    a.fecha_fin
+   FROM ((public.asignaciones_vehiculo a
+     JOIN public.vehiculos v ON ((a.vehiculo_id = v.id_vehiculo)))
+     JOIN public.conductores c ON ((a.conductor_id = c.id_conductor)))
+  WHERE ((a.fecha_fin IS NULL) OR (a.fecha_fin > CURRENT_DATE));
+
+
+ALTER VIEW public.asignacion_actual_vehiculos OWNER TO grupo2;
+
+--
+-- TOC entry 229 (class 1259 OID 17210)
+-- Name: asignaciones_vehiculo_id_asignacion_vehiculo_seq; Type: SEQUENCE; Schema: public; Owner: grupo2
+--
+
+CREATE SEQUENCE public.asignaciones_vehiculo_id_asignacion_vehiculo_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.asignaciones_vehiculo_id_asignacion_vehiculo_seq OWNER TO grupo2;
+
+--
+-- TOC entry 3601 (class 0 OID 0)
+-- Dependencies: 229
+-- Name: asignaciones_vehiculo_id_asignacion_vehiculo_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: grupo2
+--
+
+ALTER SEQUENCE public.asignaciones_vehiculo_id_asignacion_vehiculo_seq OWNED BY public.asignaciones_vehiculo.id_asignacion_vehiculo;
+
+
+--
+-- TOC entry 249 (class 1259 OID 17841)
+-- Name: auditoria_general; Type: TABLE; Schema: public; Owner: grupo2
+--
+
+CREATE TABLE public.auditoria_general (
+    id integer NOT NULL,
+    tabla_afectada character varying(100),
+    id_referencia integer,
+    usuario character varying(100),
+    operacion character varying(10),
+    fecha_evento timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    campo_1_nombre character varying(100),
+    campo_1_valor_viejo text,
+    campo_1_valor_nuevo text,
+    campo_2_nombre character varying(100),
+    campo_2_valor_viejo text,
+    campo_2_valor_nuevo text,
+    observaciones text,
+    estado boolean DEFAULT true
+);
+
+
+ALTER TABLE public.auditoria_general OWNER TO grupo2;
+
+--
+-- TOC entry 248 (class 1259 OID 17840)
+-- Name: auditoria_general_id_seq; Type: SEQUENCE; Schema: public; Owner: grupo2
+--
+
+CREATE SEQUENCE public.auditoria_general_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.auditoria_general_id_seq OWNER TO grupo2;
+
+--
+-- TOC entry 3604 (class 0 OID 0)
+-- Dependencies: 248
+-- Name: auditoria_general_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: grupo2
+--
+
+ALTER SEQUENCE public.auditoria_general_id_seq OWNED BY public.auditoria_general.id;
+
+
+--
+-- TOC entry 227 (class 1259 OID 17138)
+-- Name: conductores_id_conductor_seq; Type: SEQUENCE; Schema: public; Owner: grupo2
+--
+
+CREATE SEQUENCE public.conductores_id_conductor_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.conductores_id_conductor_seq OWNER TO grupo2;
+
+--
+-- TOC entry 3606 (class 0 OID 0)
+-- Dependencies: 227
+-- Name: conductores_id_conductor_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: grupo2
+--
+
+ALTER SEQUENCE public.conductores_id_conductor_seq OWNED BY public.conductores.id_conductor;
+
+
+--
+-- TOC entry 234 (class 1259 OID 17245)
+-- Name: registros_viaje; Type: TABLE; Schema: public; Owner: grupo2
+--
+
+CREATE TABLE public.registros_viaje (
+    id_registro_viaje integer NOT NULL,
+    vehiculo_id integer,
+    ruta_id integer,
+    fecha date,
+    kilometros_recorridos integer,
+    combustible_consumido numeric(5,2),
+    observaciones text,
+    estado boolean DEFAULT true
+);
+
+
+ALTER TABLE public.registros_viaje OWNER TO grupo2;
+
+--
+-- TOC entry 224 (class 1259 OID 17107)
+-- Name: rutas; Type: TABLE; Schema: public; Owner: grupo2
+--
+
+CREATE TABLE public.rutas (
+    id_ruta integer NOT NULL,
+    nombre character varying(100),
+    origen character varying(100),
+    destino character varying(100),
+    distancia_km numeric(6,2),
+    estado boolean DEFAULT true
+);
+
+
+ALTER TABLE public.rutas OWNER TO grupo2;
+
+--
+-- TOC entry 244 (class 1259 OID 17598)
+-- Name: consumo_medio_combustible; Type: VIEW; Schema: public; Owner: grupo2
+--
+
+CREATE VIEW public.consumo_medio_combustible AS
+ SELECT rv.vehiculo_id,
+    r.nombre AS ruta,
+    avg(rv.combustible_consumido) AS consumo_medio
+   FROM (public.registros_viaje rv
+     JOIN public.rutas r ON ((rv.ruta_id = r.id_ruta)))
+  GROUP BY rv.vehiculo_id, r.nombre;
+
+
+ALTER VIEW public.consumo_medio_combustible OWNER TO grupo2;
+
+--
+-- TOC entry 218 (class 1259 OID 17082)
+-- Name: departamentos; Type: TABLE; Schema: public; Owner: grupo2
+--
+
+CREATE TABLE public.departamentos (
+    id_departamento integer NOT NULL,
+    nombre character varying(100),
+    descripcion text,
+    estado boolean DEFAULT true
+);
+
+
+ALTER TABLE public.departamentos OWNER TO grupo2;
+
+--
+-- TOC entry 217 (class 1259 OID 17081)
+-- Name: departamentos_id_departamento_seq; Type: SEQUENCE; Schema: public; Owner: grupo2
+--
+
+CREATE SEQUENCE public.departamentos_id_departamento_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.departamentos_id_departamento_seq OWNER TO grupo2;
+
+--
+-- TOC entry 3612 (class 0 OID 0)
+-- Dependencies: 217
+-- Name: departamentos_id_departamento_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: grupo2
+--
+
+ALTER SEQUENCE public.departamentos_id_departamento_seq OWNED BY public.departamentos.id_departamento;
+
+
+--
+-- TOC entry 240 (class 1259 OID 17300)
+-- Name: incidentes; Type: TABLE; Schema: public; Owner: grupo2
+--
+
+CREATE TABLE public.incidentes (
+    id_incidente integer NOT NULL,
+    vehiculo_id integer,
+    conductor_id integer,
+    fecha date,
+    descripcion text,
+    gravedad character varying(50),
+    estado boolean DEFAULT true
+);
+
+
+ALTER TABLE public.incidentes OWNER TO grupo2;
+
+--
+-- TOC entry 245 (class 1259 OID 17602)
+-- Name: historial_incidentes_conductor; Type: VIEW; Schema: public; Owner: grupo2
+--
+
+CREATE VIEW public.historial_incidentes_conductor AS
+ SELECT c.nombre AS conductor,
+    i.fecha,
+    i.descripcion,
+    i.gravedad
+   FROM (public.incidentes i
+     JOIN public.conductores c ON ((i.conductor_id = c.id_conductor)))
+  ORDER BY i.fecha DESC;
+
+
+ALTER VIEW public.historial_incidentes_conductor OWNER TO grupo2;
+
+--
+-- TOC entry 239 (class 1259 OID 17299)
+-- Name: incidentes_id_incidente_seq; Type: SEQUENCE; Schema: public; Owner: grupo2
+--
+
+CREATE SEQUENCE public.incidentes_id_incidente_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.incidentes_id_incidente_seq OWNER TO grupo2;
+
+--
+-- TOC entry 3616 (class 0 OID 0)
+-- Dependencies: 239
+-- Name: incidentes_id_incidente_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: grupo2
+--
+
+ALTER SEQUENCE public.incidentes_id_incidente_seq OWNED BY public.incidentes.id_incidente;
+
+
+--
+-- TOC entry 236 (class 1259 OID 17264)
+-- Name: mantenimientos_programados; Type: TABLE; Schema: public; Owner: grupo2
+--
+
+CREATE TABLE public.mantenimientos_programados (
+    id_programado integer NOT NULL,
+    vehiculo_id integer,
+    tipo_mantenimiento_id integer,
+    fecha_programada date,
+    kilometraje_programado integer,
+    estado character varying(20)
+);
+
+
+ALTER TABLE public.mantenimientos_programados OWNER TO grupo2;
+
+--
+-- TOC entry 235 (class 1259 OID 17263)
+-- Name: mantenimientos_programados_id_programado_seq; Type: SEQUENCE; Schema: public; Owner: grupo2
+--
+
+CREATE SEQUENCE public.mantenimientos_programados_id_programado_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.mantenimientos_programados_id_programado_seq OWNER TO grupo2;
+
+--
+-- TOC entry 3619 (class 0 OID 0)
+-- Dependencies: 235
+-- Name: mantenimientos_programados_id_programado_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: grupo2
+--
+
+ALTER SEQUENCE public.mantenimientos_programados_id_programado_seq OWNED BY public.mantenimientos_programados.id_programado;
+
+
+--
+-- TOC entry 238 (class 1259 OID 17281)
+-- Name: mantenimientos_realizados; Type: TABLE; Schema: public; Owner: grupo2
+--
+
+CREATE TABLE public.mantenimientos_realizados (
+    id_realizados integer NOT NULL,
+    vehiculo_id integer,
+    tipo_mantenimiento_id integer,
+    fecha date,
+    costo numeric(10,2),
+    descripcion text,
+    estado boolean DEFAULT true
+);
+
+
+ALTER TABLE public.mantenimientos_realizados OWNER TO grupo2;
+
+--
+-- TOC entry 237 (class 1259 OID 17280)
+-- Name: mantenimientos_realizados_id_realizados_seq; Type: SEQUENCE; Schema: public; Owner: grupo2
+--
+
+CREATE SEQUENCE public.mantenimientos_realizados_id_realizados_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.mantenimientos_realizados_id_realizados_seq OWNER TO grupo2;
+
+--
+-- TOC entry 3622 (class 0 OID 0)
+-- Dependencies: 237
+-- Name: mantenimientos_realizados_id_realizados_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: grupo2
+--
+
+ALTER SEQUENCE public.mantenimientos_realizados_id_realizados_seq OWNED BY public.mantenimientos_realizados.id_realizados;
+
+
+--
+-- TOC entry 242 (class 1259 OID 17319)
+-- Name: multas; Type: TABLE; Schema: public; Owner: grupo2
+--
+
+CREATE TABLE public.multas (
+    id_multa integer NOT NULL,
+    vehiculo_id integer,
+    conductor_id integer,
+    fecha date,
+    motivo text,
+    valor numeric(10,2),
+    pagada boolean DEFAULT false,
+    estado boolean DEFAULT true
+);
+
+
+ALTER TABLE public.multas OWNER TO grupo2;
+
+--
+-- TOC entry 241 (class 1259 OID 17318)
+-- Name: multas_id_multa_seq; Type: SEQUENCE; Schema: public; Owner: grupo2
+--
+
+CREATE SEQUENCE public.multas_id_multa_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.multas_id_multa_seq OWNER TO grupo2;
+
+--
+-- TOC entry 3625 (class 0 OID 0)
+-- Dependencies: 241
+-- Name: multas_id_multa_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: grupo2
+--
+
+ALTER SEQUENCE public.multas_id_multa_seq OWNED BY public.multas.id_multa;
+
+
+--
+-- TOC entry 232 (class 1259 OID 17228)
+-- Name: polizas; Type: TABLE; Schema: public; Owner: grupo2
+--
+
+CREATE TABLE public.polizas (
+    id_poliza integer NOT NULL,
+    vehiculo_id integer,
+    seguro_id integer,
+    numero_poliza character varying(50),
+    fecha_inicio date,
+    fecha_fin date,
+    valor numeric(10,2),
+    estado boolean DEFAULT true
+);
+
+
+ALTER TABLE public.polizas OWNER TO grupo2;
+
+--
+-- TOC entry 231 (class 1259 OID 17227)
+-- Name: polizas_id_poliza_seq; Type: SEQUENCE; Schema: public; Owner: grupo2
+--
+
+CREATE SEQUENCE public.polizas_id_poliza_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.polizas_id_poliza_seq OWNER TO grupo2;
+
+--
+-- TOC entry 3628 (class 0 OID 0)
+-- Dependencies: 231
+-- Name: polizas_id_poliza_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: grupo2
+--
+
+ALTER SEQUENCE public.polizas_id_poliza_seq OWNED BY public.polizas.id_poliza;
+
+
+--
+-- TOC entry 233 (class 1259 OID 17244)
+-- Name: registros_viaje_id_registro_viaje_seq; Type: SEQUENCE; Schema: public; Owner: grupo2
+--
+
+CREATE SEQUENCE public.registros_viaje_id_registro_viaje_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.registros_viaje_id_registro_viaje_seq OWNER TO grupo2;
+
+--
+-- TOC entry 3630 (class 0 OID 0)
+-- Dependencies: 233
+-- Name: registros_viaje_id_registro_viaje_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: grupo2
+--
+
+ALTER SEQUENCE public.registros_viaje_id_registro_viaje_seq OWNED BY public.registros_viaje.id_registro_viaje;
+
+
+--
+-- TOC entry 223 (class 1259 OID 17106)
+-- Name: rutas_id_ruta_seq; Type: SEQUENCE; Schema: public; Owner: grupo2
+--
+
+CREATE SEQUENCE public.rutas_id_ruta_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.rutas_id_ruta_seq OWNER TO grupo2;
+
+--
+-- TOC entry 3632 (class 0 OID 0)
+-- Dependencies: 223
+-- Name: rutas_id_ruta_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: grupo2
+--
+
+ALTER SEQUENCE public.rutas_id_ruta_seq OWNED BY public.rutas.id_ruta;
+
+
+--
+-- TOC entry 220 (class 1259 OID 17091)
+-- Name: seguros; Type: TABLE; Schema: public; Owner: grupo2
+--
+
+CREATE TABLE public.seguros (
+    id_seguro integer NOT NULL,
+    "nombre_compañia" character varying(100),
+    tipo_seguro character varying(50),
+    estado boolean DEFAULT true
+);
+
+
+ALTER TABLE public.seguros OWNER TO grupo2;
+
+--
+-- TOC entry 219 (class 1259 OID 17090)
+-- Name: seguros_id_seguro_seq; Type: SEQUENCE; Schema: public; Owner: grupo2
+--
+
+CREATE SEQUENCE public.seguros_id_seguro_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.seguros_id_seguro_seq OWNER TO grupo2;
+
+--
+-- TOC entry 3635 (class 0 OID 0)
+-- Dependencies: 219
+-- Name: seguros_id_seguro_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: grupo2
+--
+
+ALTER SEQUENCE public.seguros_id_seguro_seq OWNED BY public.seguros.id_seguro;
+
+
+--
+-- TOC entry 251 (class 1259 OID 17857)
+-- Name: talleres_mecanicos; Type: TABLE; Schema: public; Owner: grupo2
+--
+
+CREATE TABLE public.talleres_mecanicos (
+    id_taller integer NOT NULL,
+    nombre character varying(100) NOT NULL,
+    direccion text,
+    telefono character varying(20),
+    ciudad character varying(100),
+    estado boolean DEFAULT true
+);
+
+
+ALTER TABLE public.talleres_mecanicos OWNER TO grupo2;
+
+--
+-- TOC entry 250 (class 1259 OID 17856)
+-- Name: talleres_mecanicos_id_taller_seq; Type: SEQUENCE; Schema: public; Owner: grupo2
+--
+
+CREATE SEQUENCE public.talleres_mecanicos_id_taller_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.talleres_mecanicos_id_taller_seq OWNER TO grupo2;
+
+--
+-- TOC entry 3638 (class 0 OID 0)
+-- Dependencies: 250
+-- Name: talleres_mecanicos_id_taller_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: grupo2
+--
+
+ALTER SEQUENCE public.talleres_mecanicos_id_taller_seq OWNED BY public.talleres_mecanicos.id_taller;
+
+
+--
+-- TOC entry 222 (class 1259 OID 17098)
+-- Name: tipos_mantenimiento; Type: TABLE; Schema: public; Owner: grupo2
+--
+
+CREATE TABLE public.tipos_mantenimiento (
+    id_mantenimiento integer NOT NULL,
+    nombre character varying(100),
+    descripcion text,
+    estado boolean DEFAULT true
+);
+
+
+ALTER TABLE public.tipos_mantenimiento OWNER TO grupo2;
+
+--
+-- TOC entry 221 (class 1259 OID 17097)
+-- Name: tipos_mantenimiento_id_mantenimiento_seq; Type: SEQUENCE; Schema: public; Owner: grupo2
+--
+
+CREATE SEQUENCE public.tipos_mantenimiento_id_mantenimiento_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.tipos_mantenimiento_id_mantenimiento_seq OWNER TO grupo2;
+
+--
+-- TOC entry 3641 (class 0 OID 0)
+-- Dependencies: 221
+-- Name: tipos_mantenimiento_id_mantenimiento_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: grupo2
+--
+
+ALTER SEQUENCE public.tipos_mantenimiento_id_mantenimiento_seq OWNED BY public.tipos_mantenimiento.id_mantenimiento;
+
+
+--
+-- TOC entry 225 (class 1259 OID 17123)
+-- Name: vehiculos_id_vehiculo_seq; Type: SEQUENCE; Schema: public; Owner: grupo2
+--
+
+CREATE SEQUENCE public.vehiculos_id_vehiculo_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER SEQUENCE public.vehiculos_id_vehiculo_seq OWNER TO grupo2;
+
+--
+-- TOC entry 3643 (class 0 OID 0)
+-- Dependencies: 225
+-- Name: vehiculos_id_vehiculo_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: grupo2
+--
+
+ALTER SEQUENCE public.vehiculos_id_vehiculo_seq OWNED BY public.vehiculos.id_vehiculo;
+
+
+--
+-- TOC entry 243 (class 1259 OID 17594)
+-- Name: vehiculos_proximo_mantenimiento; Type: VIEW; Schema: public; Owner: grupo2
+--
+
+CREATE VIEW public.vehiculos_proximo_mantenimiento AS
+ SELECT v.id_vehiculo,
+    v.placa,
+    v.marca,
+    v.modelo,
+    mp.fecha_programada,
+    mp.kilometraje_programado
+   FROM (public.vehiculos v
+     JOIN public.mantenimientos_programados mp ON ((v.id_vehiculo = mp.vehiculo_id)))
+  WHERE (mp.fecha_programada > CURRENT_DATE)
+  ORDER BY mp.fecha_programada;
+
+
+ALTER VIEW public.vehiculos_proximo_mantenimiento OWNER TO grupo2;
+
+--
+-- TOC entry 247 (class 1259 OID 17611)
+-- Name: vehiculos_sin_seguro_vigente; Type: VIEW; Schema: public; Owner: grupo2
+--
+
+CREATE VIEW public.vehiculos_sin_seguro_vigente AS
+ SELECT DISTINCT ON (v.id_vehiculo) v.id_vehiculo,
+    v.placa,
+    s."nombre_compañia",
+    p.fecha_inicio,
+    p.fecha_fin
+   FROM ((public.vehiculos v
+     JOIN public.polizas p ON ((v.id_vehiculo = p.vehiculo_id)))
+     JOIN public.seguros s ON ((p.seguro_id = s.id_seguro)))
+  WHERE (p.fecha_fin < CURRENT_DATE)
+  ORDER BY v.id_vehiculo, p.fecha_fin DESC;
+
+
+ALTER VIEW public.vehiculos_sin_seguro_vigente OWNER TO grupo2;
+
+--
+-- TOC entry 3337 (class 2604 OID 17214)
+-- Name: asignaciones_vehiculo id_asignacion_vehiculo; Type: DEFAULT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.asignaciones_vehiculo ALTER COLUMN id_asignacion_vehiculo SET DEFAULT nextval('public.asignaciones_vehiculo_id_asignacion_vehiculo_seq'::regclass);
+
+
+--
+-- TOC entry 3351 (class 2604 OID 17844)
+-- Name: auditoria_general id; Type: DEFAULT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.auditoria_general ALTER COLUMN id SET DEFAULT nextval('public.auditoria_general_id_seq'::regclass);
+
+
+--
+-- TOC entry 3335 (class 2604 OID 17142)
+-- Name: conductores id_conductor; Type: DEFAULT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.conductores ALTER COLUMN id_conductor SET DEFAULT nextval('public.conductores_id_conductor_seq'::regclass);
+
+
+--
+-- TOC entry 3324 (class 2604 OID 17085)
+-- Name: departamentos id_departamento; Type: DEFAULT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.departamentos ALTER COLUMN id_departamento SET DEFAULT nextval('public.departamentos_id_departamento_seq'::regclass);
+
+
+--
+-- TOC entry 3346 (class 2604 OID 17303)
+-- Name: incidentes id_incidente; Type: DEFAULT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.incidentes ALTER COLUMN id_incidente SET DEFAULT nextval('public.incidentes_id_incidente_seq'::regclass);
+
+
+--
+-- TOC entry 3343 (class 2604 OID 17267)
+-- Name: mantenimientos_programados id_programado; Type: DEFAULT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.mantenimientos_programados ALTER COLUMN id_programado SET DEFAULT nextval('public.mantenimientos_programados_id_programado_seq'::regclass);
+
+
+--
+-- TOC entry 3344 (class 2604 OID 17284)
+-- Name: mantenimientos_realizados id_realizados; Type: DEFAULT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.mantenimientos_realizados ALTER COLUMN id_realizados SET DEFAULT nextval('public.mantenimientos_realizados_id_realizados_seq'::regclass);
+
+
+--
+-- TOC entry 3348 (class 2604 OID 17322)
+-- Name: multas id_multa; Type: DEFAULT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.multas ALTER COLUMN id_multa SET DEFAULT nextval('public.multas_id_multa_seq'::regclass);
+
+
+--
+-- TOC entry 3339 (class 2604 OID 17231)
+-- Name: polizas id_poliza; Type: DEFAULT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.polizas ALTER COLUMN id_poliza SET DEFAULT nextval('public.polizas_id_poliza_seq'::regclass);
+
+
+--
+-- TOC entry 3341 (class 2604 OID 17248)
+-- Name: registros_viaje id_registro_viaje; Type: DEFAULT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.registros_viaje ALTER COLUMN id_registro_viaje SET DEFAULT nextval('public.registros_viaje_id_registro_viaje_seq'::regclass);
+
+
+--
+-- TOC entry 3330 (class 2604 OID 17110)
+-- Name: rutas id_ruta; Type: DEFAULT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.rutas ALTER COLUMN id_ruta SET DEFAULT nextval('public.rutas_id_ruta_seq'::regclass);
+
+
+--
+-- TOC entry 3326 (class 2604 OID 17094)
+-- Name: seguros id_seguro; Type: DEFAULT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.seguros ALTER COLUMN id_seguro SET DEFAULT nextval('public.seguros_id_seguro_seq'::regclass);
+
+
+--
+-- TOC entry 3354 (class 2604 OID 17860)
+-- Name: talleres_mecanicos id_taller; Type: DEFAULT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.talleres_mecanicos ALTER COLUMN id_taller SET DEFAULT nextval('public.talleres_mecanicos_id_taller_seq'::regclass);
+
+
+--
+-- TOC entry 3328 (class 2604 OID 17101)
+-- Name: tipos_mantenimiento id_mantenimiento; Type: DEFAULT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.tipos_mantenimiento ALTER COLUMN id_mantenimiento SET DEFAULT nextval('public.tipos_mantenimiento_id_mantenimiento_seq'::regclass);
+
+
+--
+-- TOC entry 3332 (class 2604 OID 17127)
+-- Name: vehiculos id_vehiculo; Type: DEFAULT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.vehiculos ALTER COLUMN id_vehiculo SET DEFAULT nextval('public.vehiculos_id_vehiculo_seq'::regclass);
+
+
+--
+-- TOC entry 3575 (class 0 OID 17211)
+-- Dependencies: 230
+-- Data for Name: asignaciones_vehiculo; Type: TABLE DATA; Schema: public; Owner: grupo2
+--
+
+COPY public.asignaciones_vehiculo (id_asignacion_vehiculo, vehiculo_id, conductor_id, fecha_inicio, fecha_fin, estado) FROM stdin;
+1	1	1	2024-01-01	2024-03-01	t
+2	2	2	2024-02-01	\N	t
+3	3	3	2023-10-01	2024-04-15	t
+4	4	4	2024-03-01	\N	t
+5	5	5	2024-04-01	\N	t
+6	1	1	2024-01-01	2024-03-01	t
+7	2	2	2024-02-01	2024-04-01	t
+8	3	3	2024-03-01	\N	t
+9	4	4	2024-04-01	\N	t
+10	5	5	2024-01-15	2024-02-15	t
+11	6	6	2024-03-10	\N	t
+12	7	7	2024-03-20	\N	t
+13	8	8	2024-04-05	\N	t
+14	9	9	2024-04-10	\N	t
+15	10	10	2024-04-15	\N	t
+\.
+
+
+--
+-- TOC entry 3589 (class 0 OID 17841)
+-- Dependencies: 249
+-- Data for Name: auditoria_general; Type: TABLE DATA; Schema: public; Owner: grupo2
+--
+
+COPY public.auditoria_general (id, tabla_afectada, id_referencia, usuario, operacion, fecha_evento, campo_1_nombre, campo_1_valor_viejo, campo_1_valor_nuevo, campo_2_nombre, campo_2_valor_viejo, campo_2_valor_nuevo, observaciones, estado) FROM stdin;
+16	registros_viaje	32	grupo2	INSERT	2025-05-17 00:37:08.449938	kilometros_recorridos	\N	140	combustible_consumido	\N	13.50	Viaje programado a acevedo	t
+17	mantenimientos_programados	22	grupo2	INSERT	2025-05-17 00:37:08.449938	fecha_programada	\N	2025-05-10	estado	\N	Pendiente	\N	t
+18	mantenimientos_programados	11	grupo2	UPDATE	2025-05-17 00:37:08.449938	fecha_programada	2025-07-01	2025-07-01	estado	Realizado	Realizado	\N	t
+19	multas	20	grupo2	INSERT	2025-05-17 00:37:08.449938	motivo	\N	Exceso de velocidad	valor	\N	200000.00	\N	t
+20	multas	11	grupo2	UPDATE	2025-05-17 00:37:08.449938	motivo	Hablar por celular	Hablar por celular	valor	10000.00	10000.00	\N	t
+21	registros_viaje	11	grupo2	UPDATE	2025-05-17 00:38:07.907297	kilometros_recorridos	126	1000	combustible_consumido	10.00	10.00	Ajuste por GPS	t
+22	registros_viaje	9	grupo2	DELETE	2025-05-17 00:38:07.907297	kilometros_recorridos	51	\N	combustible_consumido	6.10	\N	Vía en buen estado	t
+23	mantenimientos_programados	7	grupo2	DELETE	2025-05-17 00:38:39.158029	fecha_programada	2025-06-10	\N	estado	Pendiente	\N	\N	t
+24	multas	9	grupo2	DELETE	2025-05-17 00:38:42.773563	motivo	Semáforo en rojo	\N	valor	500000.00	\N	\N	t
+\.
+
+
+--
+-- TOC entry 3573 (class 0 OID 17139)
+-- Dependencies: 228
+-- Data for Name: conductores; Type: TABLE DATA; Schema: public; Owner: grupo2
+--
+
+COPY public.conductores (id_conductor, nombre, cedula, licencia_conduccion, telefono, correo, estado) FROM stdin;
+1	Carlos Pérez	10101010	B1	3001234567	carlos@empresa.com	t
+2	Luis Torres	20202020	C2	3012345678	luis@empresa.com	t
+3	Ana Rojas	30303030	B2	3023456789	ana@empresa.com	t
+4	Marta Díaz	40404040	C1	3034567890	marta@empresa.com	t
+5	Pedro Gómez	50505050	B3	3045678901	pedro@empresa.com	t
+6	Juan Pérez	10000001	A1234567	3100000001	juan.perez@mail.com	t
+7	María Gómez	10000002	B7654321	3100000002	maria.gomez@mail.com	t
+8	Carlos Ramírez	10000003	C2345678	3100000003	carlos.ramirez@mail.com	t
+9	Luisa Fernanda	10000004	D3456789	3100000004	luisa.fernanda@mail.com	t
+10	Pedro Salazar	10000005	E4567890	3100000005	pedro.salazar@mail.com	t
+11	Sandra Torres	10000006	F5678901	3100000006	sandra.torres@mail.com	t
+12	David Ríos	10000007	G6789012	3100000007	david.rios@mail.com	t
+13	Laura Castaño	10000008	H7890123	3100000008	laura.castano@mail.com	t
+14	José Ortega	10000009	I8901234	3100000009	jose.ortega@mail.com	t
+15	Ana Martínez	10000010	J9012345	3100000010	ana.martinez@mail.com	t
+\.
+
+
+--
+-- TOC entry 3563 (class 0 OID 17082)
+-- Dependencies: 218
+-- Data for Name: departamentos; Type: TABLE DATA; Schema: public; Owner: grupo2
+--
+
+COPY public.departamentos (id_departamento, nombre, descripcion, estado) FROM stdin;
+1	Logística	Departamento encargado de la distribución de productos	t
+2	Ventas	Departamento comercial	t
+3	Mantenimiento	Encargado del mantenimiento de vehículos	t
+4	Administración	Área administrativa general	t
+5	Operaciones	Gestión de operaciones de campo	t
+6	Mantenimiento	Departamento encargado del mantenimiento de los vehículos	t
+7	Logística	Gestión de rutas y viajes	t
+8	Administración	Área administrativa	t
+9	Seguridad	Departamento de supervisión y control	t
+10	Taller	Mecánica y reparaciones	t
+11	Compras	Adquisición de insumos y vehículos	t
+12	RRHH	Recursos humanos	t
+13	Tecnología	Soporte y desarrollo tecnológico	t
+14	Finanzas	Gestión económica	t
+15	Dirección	Alta dirección de la empresa	t
+\.
+
+
+--
+-- TOC entry 3585 (class 0 OID 17300)
+-- Dependencies: 240
+-- Data for Name: incidentes; Type: TABLE DATA; Schema: public; Owner: grupo2
+--
+
+COPY public.incidentes (id_incidente, vehiculo_id, conductor_id, fecha, descripcion, gravedad, estado) FROM stdin;
+1	1	1	2024-01-25	Accidente menor en intersección	Leve	t
+2	2	2	2024-02-18	Colisión por alcance	Moderada	t
+3	3	3	2024-03-12	Desperfecto mecánico	Leve	t
+4	4	4	2024-04-02	Accidente con peatón	Grave	t
+5	5	5	2024-04-21	Choque con poste	Moderada	t
+6	1	1	2024-03-01	Colisión menor	Leve	t
+7	2	2	2024-03-02	Choque con objeto	Moderada	t
+8	3	3	2024-03-03	Pinchazo	Leve	t
+9	4	4	2024-03-04	Fallo de frenos	Grave	t
+10	5	5	2024-03-05	Vidrio roto	Leve	t
+11	6	6	2024-03-06	Rayón lateral	Leve	t
+12	7	7	2024-03-07	Accidente vial	Grave	t
+13	8	8	2024-03-08	Motor recalentado	Moderada	t
+14	9	9	2024-03-09	Golpe trasero	Moderada	t
+15	10	10	2024-03-10	Puerta abollada	Leve	t
+\.
+
+
+--
+-- TOC entry 3581 (class 0 OID 17264)
+-- Dependencies: 236
+-- Data for Name: mantenimientos_programados; Type: TABLE DATA; Schema: public; Owner: grupo2
+--
+
+COPY public.mantenimientos_programados (id_programado, vehiculo_id, tipo_mantenimiento_id, fecha_programada, kilometraje_programado, estado) FROM stdin;
+1	1	1	2025-05-01	155000	Pendiente
+2	2	2	2025-05-10	51000	Pendiente
+3	3	3	2025-05-15	202000	Pendiente
+4	4	4	2025-05-20	92000	Pendiente
+5	5	5	2025-06-01	35000	Pendiente
+6	6	5	2025-06-05	51000	Pendiente
+9	9	8	2025-06-20	26000	Pendiente
+10	10	9	2025-06-25	71000	Pendiente
+12	12	6	2025-07-05	11000	Pendiente
+13	13	7	2025-07-10	21000	Pendiente
+14	14	8	2025-07-15	19000	Pendiente
+15	15	9	2025-07-20	13000	Pendiente
+16	5	2	2025-05-10	50000	Pendiente
+17	5	2	2025-05-10	50000	Pendiente
+18	5	2	2025-05-10	50000	Pendiente
+20	5	2	2025-05-10	50000	Pendiente
+21	5	2	2025-05-10	50000	Pendiente
+22	5	2	2025-05-10	50000	Pendiente
+11	11	5	2025-07-01	16000	Realizado
+\.
+
+
+--
+-- TOC entry 3583 (class 0 OID 17281)
+-- Dependencies: 238
+-- Data for Name: mantenimientos_realizados; Type: TABLE DATA; Schema: public; Owner: grupo2
+--
+
+COPY public.mantenimientos_realizados (id_realizados, vehiculo_id, tipo_mantenimiento_id, fecha, costo, descripcion, estado) FROM stdin;
+1	1	1	2024-02-10	150000.00	Cambio de aceite y filtro	t
+2	2	3	2024-03-05	200000.00	Cambio de pastillas de freno	t
+3	3	4	2024-01-20	180000.00	Chequeo preventivo completo	t
+4	4	5	2024-03-15	400000.00	Cambio de llantas	t
+5	5	2	2024-04-05	120000.00	Alineación y balanceo	t
+6	1	1	2024-01-01	150000.00	Cambio de aceite realizado	t
+7	2	2	2024-02-01	200000.00	Alineación realizada	t
+8	3	3	2024-03-01	180000.00	Cambio de frenos	t
+9	4	4	2024-04-01	250000.00	Revisión completa	t
+10	5	5	2024-01-15	120000.00	Batería nueva	t
+11	6	6	2024-03-10	160000.00	Mantenimiento preventivo	t
+12	7	7	2024-03-20	220000.00	Cambio de llantas	t
+13	8	8	2024-04-05	50000.00	Revisión de luces	t
+14	9	9	2024-04-10	30000.00	Lavado completo	t
+15	10	10	2024-04-15	280000.00	Suspensión revisada	t
+\.
+
+
+--
+-- TOC entry 3587 (class 0 OID 17319)
+-- Dependencies: 242
+-- Data for Name: multas; Type: TABLE DATA; Schema: public; Owner: grupo2
+--
+
+COPY public.multas (id_multa, vehiculo_id, conductor_id, fecha, motivo, valor, pagada, estado) FROM stdin;
+1	1	1	2024-01-28	Exceso de velocidad	250000.00	f	t
+2	2	2	2024-02-22	Estacionamiento prohibido	120000.00	t	t
+3	3	3	2024-03-15	No portar documentos	180000.00	f	t
+4	4	4	2024-04-05	Luces defectuosas	90000.00	t	t
+5	5	5	2024-04-25	Mal uso de carril	150000.00	f	t
+6	1	1	2024-02-01	Exceso de velocidad	350000.00	f	t
+7	2	2	2024-02-02	Mal parqueo	180000.00	t	t
+8	3	3	2024-02-03	No portar licencia	420000.00	f	t
+12	7	7	2024-02-07	Vehículo sin SOAT	1000000.00	t	t
+13	8	8	2024-02-08	No respetar señales	280000.00	f	t
+14	9	9	2024-02-09	Luces apagadas	120000.00	t	t
+15	10	10	2024-02-10	Sobrepeso de carga	600000.00	f	t
+16	1	4	2025-04-25	Exceso de velocidad	200000.00	t	t
+18	1	4	2025-04-25	Exceso de velocidad	200000.00	f	t
+19	1	4	2025-04-25	Exceso de velocidad	200000.00	f	t
+20	1	4	2025-04-25	Exceso de velocidad	200000.00	f	t
+11	6	6	2024-02-06	Hablar por celular	10000.00	f	t
+\.
+
+
+--
+-- TOC entry 3577 (class 0 OID 17228)
+-- Dependencies: 232
+-- Data for Name: polizas; Type: TABLE DATA; Schema: public; Owner: grupo2
+--
+
+COPY public.polizas (id_poliza, vehiculo_id, seguro_id, numero_poliza, fecha_inicio, fecha_fin, valor, estado) FROM stdin;
+1	1	1	POL001	2024-01-01	2025-01-01	1500000.00	t
+2	2	2	POL002	2024-02-01	2025-02-01	1200000.00	t
+3	3	3	POL003	2023-09-15	2024-09-15	800000.00	t
+4	4	4	POL004	2024-03-10	2025-03-10	1350000.00	t
+5	5	5	POL005	2024-04-01	2025-04-01	1600000.00	t
+6	1	1	POL001	2024-01-01	2025-01-01	1200000.00	t
+7	2	2	POL002	2024-02-01	2025-02-01	950000.00	t
+8	3	3	POL003	2024-03-01	2025-03-01	1300000.00	t
+9	4	4	POL004	2024-04-01	2025-04-01	1100000.00	t
+10	5	5	POL005	2024-01-15	2025-01-15	1250000.00	t
+11	6	6	POL006	2024-03-10	2025-03-10	980000.00	t
+12	7	7	POL007	2024-03-20	2025-03-20	1150000.00	t
+13	8	8	POL008	2024-04-05	2025-04-05	1050000.00	t
+14	9	9	POL009	2024-04-10	2025-04-10	950000.00	t
+15	10	10	POL010	2024-04-15	2025-04-15	1000000.00	t
+\.
+
+
+--
+-- TOC entry 3579 (class 0 OID 17245)
+-- Dependencies: 234
+-- Data for Name: registros_viaje; Type: TABLE DATA; Schema: public; Owner: grupo2
+--
+
+COPY public.registros_viaje (id_registro_viaje, vehiculo_id, ruta_id, fecha, kilometros_recorridos, combustible_consumido, observaciones, estado) FROM stdin;
+1	1	1	2024-01-15	420	50.50	Sin novedad	t
+2	2	2	2024-02-20	310	35.00	Retraso por lluvia	t
+3	3	3	2024-03-10	125	15.20	Ruta congestionada	t
+4	4	4	2024-04-01	265	30.00	Buen desempeño	t
+5	5	5	2024-04-20	60	8.50	Sin incidentes	t
+6	1	1	2024-04-01	415	35.50	Sin novedades	t
+7	2	2	2024-04-02	1153	95.00	Viaje largo	t
+8	3	3	2024-04-03	632	50.20	Tráfico medio	t
+10	5	5	2024-04-05	838	72.30	Buen rendimiento	t
+12	7	7	2024-04-07	265	21.40	Retrasos menores	t
+13	8	8	2024-04-08	193	15.50	Sin observaciones	t
+14	9	9	2024-04-09	248	22.00	Sin inconvenientes	t
+21	3	2	2025-04-30	140	13.50	Viaje programado a bogota	t
+23	3	2	2025-04-30	140	13.50	Viaje programado a pitalito	t
+26	3	2	2025-04-30	140	13.50	Viaje programado a pitalito	t
+27	3	2	2025-04-30	140	13.50	Viaje programado a acevedo	t
+28	3	2	2025-04-30	140	13.50	Viaje programado a acevedo	t
+29	3	2	2025-04-30	140	13.50	Viaje programado a acevedo	t
+18	3	2	2025-04-30	160	12.50	Ajuste por GPS	t
+30	1	3	2024-11-01	180	12.50	Viaje sin novedades	t
+15	1	3	2024-11-05	150	14.00	Se presentó lluvia	t
+31	3	2	2025-04-30	140	13.50	Viaje programado a acevedo	t
+32	3	2	2025-04-30	140	13.50	Viaje programado a acevedo	t
+11	6	6	2024-04-06	1000	10.00	Ajuste por GPS	t
+\.
+
+
+--
+-- TOC entry 3569 (class 0 OID 17107)
+-- Dependencies: 224
+-- Data for Name: rutas; Type: TABLE DATA; Schema: public; Owner: grupo2
+--
+
+COPY public.rutas (id_ruta, nombre, origen, destino, distancia_km, estado) FROM stdin;
+1	Ruta Norte	Bogotá	Medellín	415.00	t
+2	Ruta Sur	Bogotá	Neiva	300.00	t
+3	Ruta Costa	Barranquilla	Cartagena	120.50	t
+4	Ruta Llanos	Villavicencio	Yopal	260.75	t
+5	Ruta Café	Manizales	Pereira	55.30	t
+6	Ruta 1	Bogotá	Medellín	414.50	t
+7	Ruta 2	Cali	Barranquilla	1153.20	t
+8	Ruta 3	Bucaramanga	Santa Marta	631.70	t
+9	Ruta 4	Pereira	Manizales	51.30	t
+10	Ruta 5	Cartagena	Cúcuta	838.00	t
+11	Ruta 6	Neiva	Ibagué	125.90	t
+12	Ruta 7	Popayán	Pasto	264.80	t
+13	Ruta 8	Tunja	Villavicencio	192.60	t
+14	Ruta 9	Armenia	Medellín	248.30	t
+15	Ruta 10	Montería	Sincelejo	80.40	t
+\.
+
+
+--
+-- TOC entry 3565 (class 0 OID 17091)
+-- Dependencies: 220
+-- Data for Name: seguros; Type: TABLE DATA; Schema: public; Owner: grupo2
+--
+
+COPY public.seguros (id_seguro, "nombre_compañia", tipo_seguro, estado) FROM stdin;
+1	Seguros Alfa	Todo riesgo	t
+2	Bolívar	Responsabilidad civil	t
+3	SURA	Parcial	t
+4	Colpatria	Contra robo	t
+5	Mapfre	Todo riesgo	t
+6	Seguros Bolívar	Todo riesgo	t
+7	Allianz	Responsabilidad civil	t
+8	Sura	Todo riesgo	t
+9	Mapfre	Cobertura completa	t
+10	Liberty	Terceros	t
+11	AXA Colpatria	Todo riesgo	t
+12	Equidad Seguros	Terceros	t
+13	HDI Seguros	Responsabilidad civil	t
+14	Solidaria	Todo riesgo	t
+15	Zurich	Cobertura limitada	t
+\.
+
+
+--
+-- TOC entry 3591 (class 0 OID 17857)
+-- Dependencies: 251
+-- Data for Name: talleres_mecanicos; Type: TABLE DATA; Schema: public; Owner: grupo2
+--
+
+COPY public.talleres_mecanicos (id_taller, nombre, direccion, telefono, ciudad, estado) FROM stdin;
+\.
+
+
+--
+-- TOC entry 3567 (class 0 OID 17098)
+-- Dependencies: 222
+-- Data for Name: tipos_mantenimiento; Type: TABLE DATA; Schema: public; Owner: grupo2
+--
+
+COPY public.tipos_mantenimiento (id_mantenimiento, nombre, descripcion, estado) FROM stdin;
+1	Cambio de aceite	Aceite de motor y filtro	t
+2	Alineación y balanceo	Alineación y balanceo de ruedas	t
+3	Revisión de frenos	Inspección y reemplazo de frenos	t
+4	Mantenimiento preventivo	Chequeo general del vehículo	t
+5	Cambio de llantas	Sustitución de neumáticos desgastados	t
+6	Cambio de aceite	Cambio de aceite del motor	t
+7	Alineación y balanceo	Mantenimiento de ruedas	t
+8	Cambio de frenos	Sustitución de pastillas y discos	t
+9	Revisión general	Chequeo completo del vehículo	t
+10	Cambio de batería	Sustitución de batería	t
+11	Mantenimiento preventivo	Inspección periódica	t
+12	Cambio de llantas	Renovación de neumáticos	t
+13	Revisión de luces	Chequeo del sistema de iluminación	t
+14	Lavado completo	Limpieza interior y exterior	t
+15	Revisión de suspensión	Verificación de amortiguadores y resortes	t
+\.
+
+
+--
+-- TOC entry 3571 (class 0 OID 17124)
+-- Dependencies: 226
+-- Data for Name: vehiculos; Type: TABLE DATA; Schema: public; Owner: grupo2
+--
+
+COPY public.vehiculos (id_vehiculo, placa, marca, modelo, tipo, anio, kilometraje_total, departamento_id, estado) FROM stdin;
+1	ABC123	Toyota	Hilux	Camioneta	2018	150000	1	t
+2	XYZ987	Renault	Logan	Sedán	2020	50000	2	t
+3	LMN456	Chevrolet	N300	Furgoneta	2017	200000	3	t
+4	DEF789	Ford	Ranger	Pickup	2019	90000	1	t
+5	GHI321	Kia	Sportage	SUV	2021	30000	2	t
+6	ABC124	Chevrolet	Spark	Automóvil	2018	50000	1	t
+7	DEF456	Toyota	Hilux	Camioneta	2020	30000	2	t
+8	GHI786	Renault	Logan	Sedán	2019	40000	3	t
+9	JKL012	Nissan	Frontier	Pickup	2021	25000	4	t
+10	MNO345	Ford	Fiesta	Automóvil	2017	70000	1	t
+11	PQR678	Mazda	CX-5	SUV	2022	15000	5	t
+12	STU901	Kia	Sportage	SUV	2023	10000	2	t
+13	VWX234	Hyundai	Accent	Sedán	2020	20000	3	t
+14	YZA567	Volkswagen	Jetta	Sedán	2021	18000	4	t
+15	BCD890	Jeep	Compass	SUV	2022	12000	5	t
+18	XYZ122	Kia	Sportage	SUV	2022	35000	2	t
+20	XYZ121	Kia	Sportage	SUV	2022	35000	2	t
+\.
+
+
+--
+-- TOC entry 3647 (class 0 OID 0)
+-- Dependencies: 229
+-- Name: asignaciones_vehiculo_id_asignacion_vehiculo_seq; Type: SEQUENCE SET; Schema: public; Owner: grupo2
+--
+
+SELECT pg_catalog.setval('public.asignaciones_vehiculo_id_asignacion_vehiculo_seq', 15, true);
+
+
+--
+-- TOC entry 3648 (class 0 OID 0)
+-- Dependencies: 248
+-- Name: auditoria_general_id_seq; Type: SEQUENCE SET; Schema: public; Owner: grupo2
+--
+
+SELECT pg_catalog.setval('public.auditoria_general_id_seq', 24, true);
+
+
+--
+-- TOC entry 3649 (class 0 OID 0)
+-- Dependencies: 227
+-- Name: conductores_id_conductor_seq; Type: SEQUENCE SET; Schema: public; Owner: grupo2
+--
+
+SELECT pg_catalog.setval('public.conductores_id_conductor_seq', 18, true);
+
+
+--
+-- TOC entry 3650 (class 0 OID 0)
+-- Dependencies: 217
+-- Name: departamentos_id_departamento_seq; Type: SEQUENCE SET; Schema: public; Owner: grupo2
+--
+
+SELECT pg_catalog.setval('public.departamentos_id_departamento_seq', 15, true);
+
+
+--
+-- TOC entry 3651 (class 0 OID 0)
+-- Dependencies: 239
+-- Name: incidentes_id_incidente_seq; Type: SEQUENCE SET; Schema: public; Owner: grupo2
+--
+
+SELECT pg_catalog.setval('public.incidentes_id_incidente_seq', 15, true);
+
+
+--
+-- TOC entry 3652 (class 0 OID 0)
+-- Dependencies: 235
+-- Name: mantenimientos_programados_id_programado_seq; Type: SEQUENCE SET; Schema: public; Owner: grupo2
+--
+
+SELECT pg_catalog.setval('public.mantenimientos_programados_id_programado_seq', 22, true);
+
+
+--
+-- TOC entry 3653 (class 0 OID 0)
+-- Dependencies: 237
+-- Name: mantenimientos_realizados_id_realizados_seq; Type: SEQUENCE SET; Schema: public; Owner: grupo2
+--
+
+SELECT pg_catalog.setval('public.mantenimientos_realizados_id_realizados_seq', 16, true);
+
+
+--
+-- TOC entry 3654 (class 0 OID 0)
+-- Dependencies: 241
+-- Name: multas_id_multa_seq; Type: SEQUENCE SET; Schema: public; Owner: grupo2
+--
+
+SELECT pg_catalog.setval('public.multas_id_multa_seq', 20, true);
+
+
+--
+-- TOC entry 3655 (class 0 OID 0)
+-- Dependencies: 231
+-- Name: polizas_id_poliza_seq; Type: SEQUENCE SET; Schema: public; Owner: grupo2
+--
+
+SELECT pg_catalog.setval('public.polizas_id_poliza_seq', 15, true);
+
+
+--
+-- TOC entry 3656 (class 0 OID 0)
+-- Dependencies: 233
+-- Name: registros_viaje_id_registro_viaje_seq; Type: SEQUENCE SET; Schema: public; Owner: grupo2
+--
+
+SELECT pg_catalog.setval('public.registros_viaje_id_registro_viaje_seq', 32, true);
+
+
+--
+-- TOC entry 3657 (class 0 OID 0)
+-- Dependencies: 223
+-- Name: rutas_id_ruta_seq; Type: SEQUENCE SET; Schema: public; Owner: grupo2
+--
+
+SELECT pg_catalog.setval('public.rutas_id_ruta_seq', 15, true);
+
+
+--
+-- TOC entry 3658 (class 0 OID 0)
+-- Dependencies: 219
+-- Name: seguros_id_seguro_seq; Type: SEQUENCE SET; Schema: public; Owner: grupo2
+--
+
+SELECT pg_catalog.setval('public.seguros_id_seguro_seq', 15, true);
+
+
+--
+-- TOC entry 3659 (class 0 OID 0)
+-- Dependencies: 250
+-- Name: talleres_mecanicos_id_taller_seq; Type: SEQUENCE SET; Schema: public; Owner: grupo2
+--
+
+SELECT pg_catalog.setval('public.talleres_mecanicos_id_taller_seq', 1, false);
+
+
+--
+-- TOC entry 3660 (class 0 OID 0)
+-- Dependencies: 221
+-- Name: tipos_mantenimiento_id_mantenimiento_seq; Type: SEQUENCE SET; Schema: public; Owner: grupo2
+--
+
+SELECT pg_catalog.setval('public.tipos_mantenimiento_id_mantenimiento_seq', 15, true);
+
+
+--
+-- TOC entry 3661 (class 0 OID 0)
+-- Dependencies: 225
+-- Name: vehiculos_id_vehiculo_seq; Type: SEQUENCE SET; Schema: public; Owner: grupo2
+--
+
+SELECT pg_catalog.setval('public.vehiculos_id_vehiculo_seq', 20, true);
+
+
+--
+-- TOC entry 3374 (class 2606 OID 17216)
+-- Name: asignaciones_vehiculo asignaciones_vehiculo_pkey; Type: CONSTRAINT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.asignaciones_vehiculo
+    ADD CONSTRAINT asignaciones_vehiculo_pkey PRIMARY KEY (id_asignacion_vehiculo);
+
+
+--
+-- TOC entry 3391 (class 2606 OID 17849)
+-- Name: auditoria_general auditoria_general_pkey; Type: CONSTRAINT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.auditoria_general
+    ADD CONSTRAINT auditoria_general_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 3370 (class 2606 OID 17146)
+-- Name: conductores conductores_cedula_key; Type: CONSTRAINT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.conductores
+    ADD CONSTRAINT conductores_cedula_key UNIQUE (cedula);
+
+
+--
+-- TOC entry 3372 (class 2606 OID 17144)
+-- Name: conductores conductores_pkey; Type: CONSTRAINT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.conductores
+    ADD CONSTRAINT conductores_pkey PRIMARY KEY (id_conductor);
+
+
+--
+-- TOC entry 3357 (class 2606 OID 17089)
+-- Name: departamentos departamentos_pkey; Type: CONSTRAINT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.departamentos
+    ADD CONSTRAINT departamentos_pkey PRIMARY KEY (id_departamento);
+
+
+--
+-- TOC entry 3387 (class 2606 OID 17307)
+-- Name: incidentes incidentes_pkey; Type: CONSTRAINT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.incidentes
+    ADD CONSTRAINT incidentes_pkey PRIMARY KEY (id_incidente);
+
+
+--
+-- TOC entry 3383 (class 2606 OID 17269)
+-- Name: mantenimientos_programados mantenimientos_programados_pkey; Type: CONSTRAINT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.mantenimientos_programados
+    ADD CONSTRAINT mantenimientos_programados_pkey PRIMARY KEY (id_programado);
+
+
+--
+-- TOC entry 3385 (class 2606 OID 17288)
+-- Name: mantenimientos_realizados mantenimientos_realizados_pkey; Type: CONSTRAINT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.mantenimientos_realizados
+    ADD CONSTRAINT mantenimientos_realizados_pkey PRIMARY KEY (id_realizados);
+
+
+--
+-- TOC entry 3389 (class 2606 OID 17327)
+-- Name: multas multas_pkey; Type: CONSTRAINT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.multas
+    ADD CONSTRAINT multas_pkey PRIMARY KEY (id_multa);
+
+
+--
+-- TOC entry 3377 (class 2606 OID 17233)
+-- Name: polizas polizas_pkey; Type: CONSTRAINT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.polizas
+    ADD CONSTRAINT polizas_pkey PRIMARY KEY (id_poliza);
+
+
+--
+-- TOC entry 3380 (class 2606 OID 17252)
+-- Name: registros_viaje registros_viaje_pkey; Type: CONSTRAINT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.registros_viaje
+    ADD CONSTRAINT registros_viaje_pkey PRIMARY KEY (id_registro_viaje);
+
+
+--
+-- TOC entry 3363 (class 2606 OID 17112)
+-- Name: rutas rutas_pkey; Type: CONSTRAINT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.rutas
+    ADD CONSTRAINT rutas_pkey PRIMARY KEY (id_ruta);
+
+
+--
+-- TOC entry 3359 (class 2606 OID 17096)
+-- Name: seguros seguros_pkey; Type: CONSTRAINT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.seguros
+    ADD CONSTRAINT seguros_pkey PRIMARY KEY (id_seguro);
+
+
+--
+-- TOC entry 3393 (class 2606 OID 17864)
+-- Name: talleres_mecanicos talleres_mecanicos_pkey; Type: CONSTRAINT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.talleres_mecanicos
+    ADD CONSTRAINT talleres_mecanicos_pkey PRIMARY KEY (id_taller);
+
+
+--
+-- TOC entry 3361 (class 2606 OID 17105)
+-- Name: tipos_mantenimiento tipos_mantenimiento_pkey; Type: CONSTRAINT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.tipos_mantenimiento
+    ADD CONSTRAINT tipos_mantenimiento_pkey PRIMARY KEY (id_mantenimiento);
+
+
+--
+-- TOC entry 3366 (class 2606 OID 17130)
+-- Name: vehiculos vehiculos_pkey; Type: CONSTRAINT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.vehiculos
+    ADD CONSTRAINT vehiculos_pkey PRIMARY KEY (id_vehiculo);
+
+
+--
+-- TOC entry 3368 (class 2606 OID 17132)
+-- Name: vehiculos vehiculos_placa_key; Type: CONSTRAINT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.vehiculos
+    ADD CONSTRAINT vehiculos_placa_key UNIQUE (placa);
+
+
+--
+-- TOC entry 3375 (class 1259 OID 17590)
+-- Name: idx_conductor_vehiculo; Type: INDEX; Schema: public; Owner: grupo2
+--
+
+CREATE INDEX idx_conductor_vehiculo ON public.asignaciones_vehiculo USING btree (conductor_id);
+
+
+--
+-- TOC entry 3364 (class 1259 OID 17591)
+-- Name: idx_departamento_vehiculo; Type: INDEX; Schema: public; Owner: grupo2
+--
+
+CREATE INDEX idx_departamento_vehiculo ON public.vehiculos USING btree (departamento_id);
+
+
+--
+-- TOC entry 3381 (class 1259 OID 17592)
+-- Name: idx_mantenimiento_pendiente; Type: INDEX; Schema: public; Owner: grupo2
+--
+
+CREATE INDEX idx_mantenimiento_pendiente ON public.mantenimientos_programados USING btree (vehiculo_id, estado);
+
+
+--
+-- TOC entry 3378 (class 1259 OID 17593)
+-- Name: idx_viaje_vehiculo; Type: INDEX; Schema: public; Owner: grupo2
+--
+
+CREATE INDEX idx_viaje_vehiculo ON public.registros_viaje USING btree (vehiculo_id);
+
+
+--
+-- TOC entry 3410 (class 2620 OID 17853)
+-- Name: mantenimientos_programados tr_auditoria_mantenimientos; Type: TRIGGER; Schema: public; Owner: grupo2
+--
+
+CREATE TRIGGER tr_auditoria_mantenimientos AFTER INSERT OR DELETE OR UPDATE ON public.mantenimientos_programados FOR EACH ROW EXECUTE FUNCTION public.fn_auditoria_mantenimientos();
+
+
+--
+-- TOC entry 3411 (class 2620 OID 17855)
+-- Name: multas tr_auditoria_multas; Type: TRIGGER; Schema: public; Owner: grupo2
+--
+
+CREATE TRIGGER tr_auditoria_multas AFTER INSERT OR DELETE OR UPDATE ON public.multas FOR EACH ROW EXECUTE FUNCTION public.fn_auditoria_multas();
+
+
+--
+-- TOC entry 3409 (class 2620 OID 17851)
+-- Name: registros_viaje tr_auditoria_registros_viaje; Type: TRIGGER; Schema: public; Owner: grupo2
+--
+
+CREATE TRIGGER tr_auditoria_registros_viaje AFTER INSERT OR DELETE OR UPDATE ON public.registros_viaje FOR EACH ROW EXECUTE FUNCTION public.fn_auditoria_registros_viaje();
+
+
+--
+-- TOC entry 3395 (class 2606 OID 17222)
+-- Name: asignaciones_vehiculo asignaciones_vehiculo_conductor_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.asignaciones_vehiculo
+    ADD CONSTRAINT asignaciones_vehiculo_conductor_id_fkey FOREIGN KEY (conductor_id) REFERENCES public.conductores(id_conductor);
+
+
+--
+-- TOC entry 3396 (class 2606 OID 17217)
+-- Name: asignaciones_vehiculo asignaciones_vehiculo_vehiculo_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.asignaciones_vehiculo
+    ADD CONSTRAINT asignaciones_vehiculo_vehiculo_id_fkey FOREIGN KEY (vehiculo_id) REFERENCES public.vehiculos(id_vehiculo);
+
+
+--
+-- TOC entry 3405 (class 2606 OID 17313)
+-- Name: incidentes incidentes_conductor_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.incidentes
+    ADD CONSTRAINT incidentes_conductor_id_fkey FOREIGN KEY (conductor_id) REFERENCES public.conductores(id_conductor);
+
+
+--
+-- TOC entry 3406 (class 2606 OID 17308)
+-- Name: incidentes incidentes_vehiculo_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.incidentes
+    ADD CONSTRAINT incidentes_vehiculo_id_fkey FOREIGN KEY (vehiculo_id) REFERENCES public.vehiculos(id_vehiculo);
+
+
+--
+-- TOC entry 3401 (class 2606 OID 17275)
+-- Name: mantenimientos_programados mantenimientos_programados_tipo_mantenimiento_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.mantenimientos_programados
+    ADD CONSTRAINT mantenimientos_programados_tipo_mantenimiento_id_fkey FOREIGN KEY (tipo_mantenimiento_id) REFERENCES public.tipos_mantenimiento(id_mantenimiento);
+
+
+--
+-- TOC entry 3402 (class 2606 OID 17270)
+-- Name: mantenimientos_programados mantenimientos_programados_vehiculo_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.mantenimientos_programados
+    ADD CONSTRAINT mantenimientos_programados_vehiculo_id_fkey FOREIGN KEY (vehiculo_id) REFERENCES public.vehiculos(id_vehiculo);
+
+
+--
+-- TOC entry 3403 (class 2606 OID 17294)
+-- Name: mantenimientos_realizados mantenimientos_realizados_tipo_mantenimiento_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.mantenimientos_realizados
+    ADD CONSTRAINT mantenimientos_realizados_tipo_mantenimiento_id_fkey FOREIGN KEY (tipo_mantenimiento_id) REFERENCES public.tipos_mantenimiento(id_mantenimiento);
+
+
+--
+-- TOC entry 3404 (class 2606 OID 17289)
+-- Name: mantenimientos_realizados mantenimientos_realizados_vehiculo_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.mantenimientos_realizados
+    ADD CONSTRAINT mantenimientos_realizados_vehiculo_id_fkey FOREIGN KEY (vehiculo_id) REFERENCES public.vehiculos(id_vehiculo);
+
+
+--
+-- TOC entry 3407 (class 2606 OID 17333)
+-- Name: multas multas_conductor_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.multas
+    ADD CONSTRAINT multas_conductor_id_fkey FOREIGN KEY (conductor_id) REFERENCES public.conductores(id_conductor);
+
+
+--
+-- TOC entry 3408 (class 2606 OID 17328)
+-- Name: multas multas_vehiculo_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.multas
+    ADD CONSTRAINT multas_vehiculo_id_fkey FOREIGN KEY (vehiculo_id) REFERENCES public.vehiculos(id_vehiculo);
+
+
+--
+-- TOC entry 3397 (class 2606 OID 17239)
+-- Name: polizas polizas_seguro_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.polizas
+    ADD CONSTRAINT polizas_seguro_id_fkey FOREIGN KEY (seguro_id) REFERENCES public.seguros(id_seguro);
+
+
+--
+-- TOC entry 3398 (class 2606 OID 17234)
+-- Name: polizas polizas_vehiculo_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.polizas
+    ADD CONSTRAINT polizas_vehiculo_id_fkey FOREIGN KEY (vehiculo_id) REFERENCES public.vehiculos(id_vehiculo);
+
+
+--
+-- TOC entry 3399 (class 2606 OID 17258)
+-- Name: registros_viaje registros_viaje_ruta_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.registros_viaje
+    ADD CONSTRAINT registros_viaje_ruta_id_fkey FOREIGN KEY (ruta_id) REFERENCES public.rutas(id_ruta);
+
+
+--
+-- TOC entry 3400 (class 2606 OID 17253)
+-- Name: registros_viaje registros_viaje_vehiculo_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.registros_viaje
+    ADD CONSTRAINT registros_viaje_vehiculo_id_fkey FOREIGN KEY (vehiculo_id) REFERENCES public.vehiculos(id_vehiculo);
+
+
+--
+-- TOC entry 3394 (class 2606 OID 17133)
+-- Name: vehiculos vehiculos_departamento_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: grupo2
+--
+
+ALTER TABLE ONLY public.vehiculos
+    ADD CONSTRAINT vehiculos_departamento_id_fkey FOREIGN KEY (departamento_id) REFERENCES public.departamentos(id_departamento);
+
+
+--
+-- TOC entry 3597 (class 0 OID 0)
+-- Dependencies: 230
+-- Name: TABLE asignaciones_vehiculo; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON TABLE public.asignaciones_vehiculo TO admin_role;
+
+
+--
+-- TOC entry 3598 (class 0 OID 0)
+-- Dependencies: 228
+-- Name: TABLE conductores; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON TABLE public.conductores TO admin_role;
+GRANT SELECT,INSERT,UPDATE ON TABLE public.conductores TO gestor_flota_role;
+
+
+--
+-- TOC entry 3599 (class 0 OID 0)
+-- Dependencies: 226
+-- Name: TABLE vehiculos; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON TABLE public.vehiculos TO admin_role;
+GRANT SELECT ON TABLE public.vehiculos TO conductor_role;
+GRANT SELECT,INSERT,UPDATE ON TABLE public.vehiculos TO gestor_flota_role;
+
+
+--
+-- TOC entry 3600 (class 0 OID 0)
+-- Dependencies: 246
+-- Name: TABLE asignacion_actual_vehiculos; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON TABLE public.asignacion_actual_vehiculos TO admin_role;
+
+
+--
+-- TOC entry 3602 (class 0 OID 0)
+-- Dependencies: 229
+-- Name: SEQUENCE asignaciones_vehiculo_id_asignacion_vehiculo_seq; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON SEQUENCE public.asignaciones_vehiculo_id_asignacion_vehiculo_seq TO admin_role;
+
+
+--
+-- TOC entry 3603 (class 0 OID 0)
+-- Dependencies: 249
+-- Name: TABLE auditoria_general; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON TABLE public.auditoria_general TO admin_role;
+GRANT SELECT,INSERT,UPDATE ON TABLE public.auditoria_general TO gestor_flota_role;
+
+
+--
+-- TOC entry 3605 (class 0 OID 0)
+-- Dependencies: 248
+-- Name: SEQUENCE auditoria_general_id_seq; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON SEQUENCE public.auditoria_general_id_seq TO admin_role;
+GRANT ALL ON SEQUENCE public.auditoria_general_id_seq TO gestor_flota_role;
+
+
+--
+-- TOC entry 3607 (class 0 OID 0)
+-- Dependencies: 227
+-- Name: SEQUENCE conductores_id_conductor_seq; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON SEQUENCE public.conductores_id_conductor_seq TO admin_role;
+GRANT ALL ON SEQUENCE public.conductores_id_conductor_seq TO gestor_flota_role;
+
+
+--
+-- TOC entry 3608 (class 0 OID 0)
+-- Dependencies: 234
+-- Name: TABLE registros_viaje; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON TABLE public.registros_viaje TO admin_role;
+GRANT SELECT,INSERT,UPDATE ON TABLE public.registros_viaje TO conductor_role;
+
+
+--
+-- TOC entry 3609 (class 0 OID 0)
+-- Dependencies: 224
+-- Name: TABLE rutas; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON TABLE public.rutas TO admin_role;
+GRANT SELECT,INSERT,UPDATE ON TABLE public.rutas TO gestor_flota_role;
+
+
+--
+-- TOC entry 3610 (class 0 OID 0)
+-- Dependencies: 244
+-- Name: TABLE consumo_medio_combustible; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON TABLE public.consumo_medio_combustible TO admin_role;
+
+
+--
+-- TOC entry 3611 (class 0 OID 0)
+-- Dependencies: 218
+-- Name: TABLE departamentos; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON TABLE public.departamentos TO admin_role;
+GRANT SELECT,INSERT,UPDATE ON TABLE public.departamentos TO gestor_flota_role;
+GRANT SELECT ON TABLE public.departamentos TO cliente_role;
+
+
+--
+-- TOC entry 3613 (class 0 OID 0)
+-- Dependencies: 217
+-- Name: SEQUENCE departamentos_id_departamento_seq; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON SEQUENCE public.departamentos_id_departamento_seq TO admin_role;
+GRANT SELECT,USAGE ON SEQUENCE public.departamentos_id_departamento_seq TO cliente_role;
+
+
+--
+-- TOC entry 3614 (class 0 OID 0)
+-- Dependencies: 240
+-- Name: TABLE incidentes; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON TABLE public.incidentes TO admin_role;
+GRANT SELECT,INSERT,UPDATE ON TABLE public.incidentes TO conductor_role;
+
+
+--
+-- TOC entry 3615 (class 0 OID 0)
+-- Dependencies: 245
+-- Name: TABLE historial_incidentes_conductor; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON TABLE public.historial_incidentes_conductor TO admin_role;
+
+
+--
+-- TOC entry 3617 (class 0 OID 0)
+-- Dependencies: 239
+-- Name: SEQUENCE incidentes_id_incidente_seq; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON SEQUENCE public.incidentes_id_incidente_seq TO admin_role;
+GRANT ALL ON SEQUENCE public.incidentes_id_incidente_seq TO conductor_role;
+
+
+--
+-- TOC entry 3618 (class 0 OID 0)
+-- Dependencies: 236
+-- Name: TABLE mantenimientos_programados; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON TABLE public.mantenimientos_programados TO admin_role;
+GRANT SELECT ON TABLE public.mantenimientos_programados TO mecanico_role;
+GRANT SELECT,INSERT,UPDATE ON TABLE public.mantenimientos_programados TO gestor_flota_role;
+
+
+--
+-- TOC entry 3620 (class 0 OID 0)
+-- Dependencies: 235
+-- Name: SEQUENCE mantenimientos_programados_id_programado_seq; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON SEQUENCE public.mantenimientos_programados_id_programado_seq TO admin_role;
+
+
+--
+-- TOC entry 3621 (class 0 OID 0)
+-- Dependencies: 238
+-- Name: TABLE mantenimientos_realizados; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON TABLE public.mantenimientos_realizados TO admin_role;
+GRANT SELECT,INSERT,UPDATE ON TABLE public.mantenimientos_realizados TO mecanico_role;
+
+
+--
+-- TOC entry 3623 (class 0 OID 0)
+-- Dependencies: 237
+-- Name: SEQUENCE mantenimientos_realizados_id_realizados_seq; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON SEQUENCE public.mantenimientos_realizados_id_realizados_seq TO admin_role;
+
+
+--
+-- TOC entry 3624 (class 0 OID 0)
+-- Dependencies: 242
+-- Name: TABLE multas; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON TABLE public.multas TO admin_role;
+GRANT SELECT,INSERT,UPDATE ON TABLE public.multas TO gestor_flota_role;
+
+
+--
+-- TOC entry 3626 (class 0 OID 0)
+-- Dependencies: 241
+-- Name: SEQUENCE multas_id_multa_seq; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON SEQUENCE public.multas_id_multa_seq TO admin_role;
+GRANT ALL ON SEQUENCE public.multas_id_multa_seq TO gestor_flota_role;
+
+
+--
+-- TOC entry 3627 (class 0 OID 0)
+-- Dependencies: 232
+-- Name: TABLE polizas; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON TABLE public.polizas TO admin_role;
+GRANT SELECT,INSERT,UPDATE ON TABLE public.polizas TO gestor_flota_role;
+
+
+--
+-- TOC entry 3629 (class 0 OID 0)
+-- Dependencies: 231
+-- Name: SEQUENCE polizas_id_poliza_seq; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON SEQUENCE public.polizas_id_poliza_seq TO admin_role;
+GRANT ALL ON SEQUENCE public.polizas_id_poliza_seq TO gestor_flota_role;
+
+
+--
+-- TOC entry 3631 (class 0 OID 0)
+-- Dependencies: 233
+-- Name: SEQUENCE registros_viaje_id_registro_viaje_seq; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON SEQUENCE public.registros_viaje_id_registro_viaje_seq TO admin_role;
+GRANT ALL ON SEQUENCE public.registros_viaje_id_registro_viaje_seq TO conductor_role;
+
+
+--
+-- TOC entry 3633 (class 0 OID 0)
+-- Dependencies: 223
+-- Name: SEQUENCE rutas_id_ruta_seq; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON SEQUENCE public.rutas_id_ruta_seq TO admin_role;
+GRANT ALL ON SEQUENCE public.rutas_id_ruta_seq TO gestor_flota_role;
+
+
+--
+-- TOC entry 3634 (class 0 OID 0)
+-- Dependencies: 220
+-- Name: TABLE seguros; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON TABLE public.seguros TO admin_role;
+GRANT SELECT,INSERT,UPDATE ON TABLE public.seguros TO gestor_flota_role;
+
+
+--
+-- TOC entry 3636 (class 0 OID 0)
+-- Dependencies: 219
+-- Name: SEQUENCE seguros_id_seguro_seq; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON SEQUENCE public.seguros_id_seguro_seq TO admin_role;
+GRANT ALL ON SEQUENCE public.seguros_id_seguro_seq TO gestor_flota_role;
+
+
+--
+-- TOC entry 3637 (class 0 OID 0)
+-- Dependencies: 251
+-- Name: TABLE talleres_mecanicos; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON TABLE public.talleres_mecanicos TO admin_role;
+
+
+--
+-- TOC entry 3639 (class 0 OID 0)
+-- Dependencies: 250
+-- Name: SEQUENCE talleres_mecanicos_id_taller_seq; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON SEQUENCE public.talleres_mecanicos_id_taller_seq TO admin_role;
+
+
+--
+-- TOC entry 3640 (class 0 OID 0)
+-- Dependencies: 222
+-- Name: TABLE tipos_mantenimiento; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON TABLE public.tipos_mantenimiento TO admin_role;
+GRANT SELECT,INSERT,UPDATE ON TABLE public.tipos_mantenimiento TO mecanico_role;
+
+
+--
+-- TOC entry 3642 (class 0 OID 0)
+-- Dependencies: 221
+-- Name: SEQUENCE tipos_mantenimiento_id_mantenimiento_seq; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON SEQUENCE public.tipos_mantenimiento_id_mantenimiento_seq TO admin_role;
+GRANT ALL ON SEQUENCE public.tipos_mantenimiento_id_mantenimiento_seq TO mecanico_role;
+
+
+--
+-- TOC entry 3644 (class 0 OID 0)
+-- Dependencies: 225
+-- Name: SEQUENCE vehiculos_id_vehiculo_seq; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON SEQUENCE public.vehiculos_id_vehiculo_seq TO admin_role;
+GRANT ALL ON SEQUENCE public.vehiculos_id_vehiculo_seq TO gestor_flota_role;
+
+
+--
+-- TOC entry 3645 (class 0 OID 0)
+-- Dependencies: 243
+-- Name: TABLE vehiculos_proximo_mantenimiento; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON TABLE public.vehiculos_proximo_mantenimiento TO admin_role;
+
+
+--
+-- TOC entry 3646 (class 0 OID 0)
+-- Dependencies: 247
+-- Name: TABLE vehiculos_sin_seguro_vigente; Type: ACL; Schema: public; Owner: grupo2
+--
+
+GRANT ALL ON TABLE public.vehiculos_sin_seguro_vigente TO admin_role;
+
+
+-- Completed on 2025-05-17 02:38:32 UTC
+
+--
+-- PostgreSQL database dump complete
+--
+
